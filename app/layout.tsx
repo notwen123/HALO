@@ -32,7 +32,7 @@ export default function RootLayout({
                 <h1 className="text-xl font-bold tracking-tighter text-glow">HALO <span className="text-primary opacity-50 font-normal">GUARDIAN</span></h1>
               </div>
               <div id="connect-wallet-container">
-                {/* ConnectKit Button will be rendered here by the children if needed, or we place it here */}
+                <ConnectKitButton />
               </div>
             </header>
             <main className="flex-1 px-8 py-8">
