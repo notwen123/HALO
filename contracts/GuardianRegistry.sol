@@ -7,14 +7,18 @@ pragma solidity ^0.8.19;
  * This follows the spirit of ERC-8004 for agent identity.
  */
 contract GuardianRegistry {
+    address public agentIdentity;
+
     struct AgentInfo {
         address agentAddress;
+        uint256 tokenId;
         string metadataURI; // URI to agent.json
         bool isActive;
     }
 
-    // Mapping from user to their authorized agent
-    mapping(address => address) public userToAgent;
+    constructor(address _agentIdentity) {
+        agentIdentity = _agentIdentity;
+    }
     
     // Mapping to check if an address is a registered agent
     mapping(address => AgentInfo) public agents;
@@ -23,12 +27,16 @@ contract GuardianRegistry {
     event AgentAssigned(address indexed user, address indexed agent);
     event AgentRevoked(address indexed user, address indexed agent);
 
+    // Mapping from user to their authorized agent
+    mapping(address => address) public userToAgent;
+
     /**
      * @dev Register an agent with metadata (ERC-8004 style).
      */
-    function registerAgent(address _agent, string calldata _metadataURI) external {
+    function registerAgent(address _agent, uint256 _tokenId, string calldata _metadataURI) external {
         agents[_agent] = AgentInfo({
             agentAddress: _agent,
+            tokenId: _tokenId,
             metadataURI: _metadataURI,
             isActive: true
         });
