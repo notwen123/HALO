@@ -1,6 +1,6 @@
 import { createPublicClient, http, createWalletClient, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { flowEVMTestnet } from "@/app/components/Web3Provider";
+import { flowTestnet } from "wagmi/chains";
 import { GUARDIAN_VAULT_ABI } from "./contracts";
 
 /**
@@ -18,13 +18,13 @@ export class GuardianAgent {
     this.vaultAddress = vaultAddress as any;
 
     this.publicClient = createPublicClient({
-      chain: flowEVMTestnet,
+      chain: flowTestnet,
       transport: http(),
     });
 
     this.walletClient = createWalletClient({
       account: this.agentAccount,
-      chain: flowEVMTestnet,
+      chain: flowTestnet,
       transport: http(),
     });
   }
