@@ -6,8 +6,9 @@ const config: HardhatUserConfig = {
     networks: {
         flowTestnet: {
             url: "https://testnet.evm.nodes.onflow.org",
-            accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-        },
+            accounts: (process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : []) as any,
+            chainId: 545,
+        } as any,
     },
 };
 
