@@ -14,7 +14,7 @@ import {
   Bell
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
@@ -94,7 +94,7 @@ export default function DashboardLayout({
                  <Bell className="w-5 h-5" />
                  <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse" />
               </button>
-              <ConnectKitButton />
+              <ConnectButton />
            </div>
         </header>
 

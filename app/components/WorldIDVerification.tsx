@@ -36,23 +36,28 @@ export default function WorldIDGuardian({
   };
 
   return (
-    <IDKitRequestWidget
-      app_id="app_staging_08004"
-      action="guardian-killswitch"
-      onOpenChange={setIsOpen}
-      open={isOpen}
-      handleVerify={handleVerify}
-      onSuccess={(result) => console.log("Guardian Proof Verified!", result)}
-      auto_legacy_proofs={true}
-      preset={orbLegacy()}
-    >
-        <button
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-6 py-2 bg-accent/20 text-accent rounded-lg border border-accent/30 hover:bg-accent/30 transition-all font-medium"
-        >
-          <UserCheck className="w-4 h-4" />
-          Verify Human Guardian
-        </button>
-    </IDKitRequestWidget>
+    <>
+      <IDKitRequestWidget
+        app_id="app_staging_08004"
+        action="guardian-killswitch"
+        onOpenChange={setIsOpen}
+        open={isOpen}
+        handleVerify={handleVerify}
+        onSuccess={(result) => console.log("Guardian Proof Verified!", result)}
+        allow_legacy_proofs={true}
+        preset={orbLegacy()}
+        rp_context={{
+          rp_id: "app_staging_08004",
+          nonce: Math.random().toString(36).substring(7),
+        } as any}
+      />
+      <button
+        onClick={() => setIsOpen(true)}
+        className="flex items-center gap-2 px-6 py-2 bg-accent/20 text-accent rounded-lg border border-accent/30 hover:bg-accent/30 transition-all font-medium"
+      >
+        <UserCheck className="w-4 h-4" />
+        Verify Human Guardian
+      </button>
+    </>
   );
 }

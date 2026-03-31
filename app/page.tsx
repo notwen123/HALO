@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Shield, Lock, Activity, ArrowRight, Zap, Eye, Globe } from "lucide-react";
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRef } from "react";
 
 export default function LandingPage() {

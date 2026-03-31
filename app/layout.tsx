@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Web3Provider } from "./components/Web3Provider";
-import { ConnectKitButton } from "connectkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +33,7 @@ export default function RootLayout({
                 <h1 className="text-xl font-bold tracking-tighter text-glow">HALO <span className="text-primary opacity-50 font-normal">GUARDIAN</span></h1>
               </div>
               <div id="connect-wallet-container">
-                <ConnectKitButton />
+                <ConnectButton />
               </div>
             </header>
             <main className="flex-1">

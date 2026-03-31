@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import WorldIDGuardian from "./components/WorldIDVerification";
+import WorldIDGuardian from "../components/WorldIDVerification";
 
 export default function Dashboard() {
   const { address, isConnected } = useAccount();
