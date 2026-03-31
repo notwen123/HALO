@@ -1,0 +1,88 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockYieldStrategy",
+  "sourceName": "contracts/MockYieldStrategy.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "deposit",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "emergencyWithdraw",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalDeposits",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561000f575f80fd5b506101c18061001d5f395ff3fe608060405234801561000f575f80fd5b5060043610610055575f3560e01c806312065fe0146100595780632e1a7d4d1461006f5780637d88209714610092578063b6b55f251461009a578063db2e21bc146100ad575b5f80fd5b5f545b6040519081526020015b60405180910390f35b61008261007d366004610134565b6100b8565b6040519015158152602001610066565b61005c5f5481565b6100826100a8366004610134565b610123565b5f805490805561005c565b5f815f5410156101065760405162461bcd60e51b8152602060048201526015602482015274496e73756666696369656e74206465706f7369747360581b604482015260640160405180910390fd5b815f80828254610116919061015f565b9091555060019392505050565b5f815f808282546101169190610178565b5f60208284031215610144575f80fd5b5035919050565b634e487b7160e01b5f52601160045260245ffd5b818103818111156101725761017261014b565b92915050565b808201808211156101725761017261014b56fea26469706673582212205be4f1a0a76b5b2d876bf57b6efe8eebac825be2cdfd228ec1db579967a317c864736f6c63430008180033",
+  "deployedBytecode": "0x608060405234801561000f575f80fd5b5060043610610055575f3560e01c806312065fe0146100595780632e1a7d4d1461006f5780637d88209714610092578063b6b55f251461009a578063db2e21bc146100ad575b5f80fd5b5f545b6040519081526020015b60405180910390f35b61008261007d366004610134565b6100b8565b6040519015158152602001610066565b61005c5f5481565b6100826100a8366004610134565b610123565b5f805490805561005c565b5f815f5410156101065760405162461bcd60e51b8152602060048201526015602482015274496e73756666696369656e74206465706f7369747360581b604482015260640160405180910390fd5b815f80828254610116919061015f565b9091555060019392505050565b5f815f808282546101169190610178565b5f60208284031215610144575f80fd5b5035919050565b634e487b7160e01b5f52601160045260245ffd5b818103818111156101725761017261014b565b92915050565b808201808211156101725761017261014b56fea26469706673582212205be4f1a0a76b5b2d876bf57b6efe8eebac825be2cdfd228ec1db579967a317c864736f6c63430008180033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

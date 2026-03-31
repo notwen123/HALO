@@ -139,7 +139,7 @@ HALO strongly targets:
 
 ## Team
 Built by [Your Name] for PL_Genesis 2026
-
+https://my.spline.design/untitled-Y9aOtfNhptRYuQP1jNXi9Z5X/
 ---
 
 **"Enable Protection. Sleep peacefully. Let HALO guard your digital life."**

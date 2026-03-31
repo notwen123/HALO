@@ -10,7 +10,7 @@ import { GUARDIAN_VAULT_ABI } from "./contracts";
 export class GuardianAgent {
   private publicClient;
   private walletClient;
-  private vaultAddress: `0x00000..`; // Set this after deployment
+  private vaultAddress: `0x${string}`;
   private agentAccount;
 
   constructor(privateKey: string, vaultAddress: `0x${string}`) {
@@ -55,7 +55,7 @@ export class GuardianAgent {
       
       // 3. Execute protection action (Move to MockYieldStrategy)
       // For the demo, we use a predefined strategy address
-      const strategyAddress = "0x..." as `0x${string}`; // Set this after deployment
+      const strategyAddress = "0x61CBf3d0706a0780c5eEdB6b57D5B539C185Ae8C" as `0x${string}`;
       
       try {
         const { request } = await this.publicClient.simulateContract({

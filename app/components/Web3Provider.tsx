@@ -7,18 +7,27 @@ import {
   darkTheme,
 } from "@rainbow-me/rainbowkit";
 import { WagmiProvider, http } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, base, flowTestnet } from "wagmi/chains";
+import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import * as React from "react";
 
-const config = getDefaultConfig({
-  appName: "HALO Autonomous Guardian",
-  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_PROJECT_ID",
-  chains: [flowTestnet, mainnet, polygon, optimism, arbitrum, base],
-  transports: {
-    [flowTestnet.id]: http(),
-    [mainnet.id]: http(),
+const flowEvmTestnet = {
+  id: 747,
+  name: "Flow EVM Testnet",
+  nativeCurrency: { name: "Flow", symbol: "FLOW", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://testnet.evm.nodes.onflow.org"] },
   },
+  blockExplorers: {
+    default: { name: "FlowScan", url: "https://747.evmscan.io" },
+  },
+  testnet: true,
+};
+
+const config = getDefaultConfig({
+  appName: "HALO",
+  projectId: "YOUR_PROJECT_ID", // Replace with real one if needed
+  chains: [flowEvmTestnet, mainnet, polygon, optimism, arbitrum, base],
   ssr: true,
 });
 
@@ -30,8 +39,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider 
           theme={darkTheme({
-            accentColor: "#00FF9F",
-            accentColorForeground: "#09090B",
+            accentColor: "#d3bbff", // Stitch Primary
+            accentColorForeground: "#131313",
             borderRadius: "large",
             fontStack: "system",
             overlayBlur: "small",

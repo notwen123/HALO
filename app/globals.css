@@ -1,55 +1,56 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
-  --primary: #00FF9F;
-  --primary-glow: rgba(0, 255, 159, 0.3);
-  --secondary: #0A1729;
-  --accent: #00D1FF;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --background: #131313;
+  --foreground: #e2e2e2;
+  --primary: #d3bbff;
+  --secondary: #ffb1c4;
+  --tertiary: #50d7ef;
+  --surface: #131313;
+  --surface-container: #1f1f1f;
+  --surface-container-high: #2a2a2a;
+  --on-surface-variant: rgba(226, 226, 222, 0.7);
+  --primary-glow: rgba(211, 187, 255, 0.4);
 }
 
 @theme {
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-surface: var(--surface);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-on-surface-variant: var(--on-surface-variant);
+}
+
+@layer utilities {
+  .siri-glow {
+    background: radial-gradient(circle at center, rgba(244, 56, 129, 0.15) 0%, rgba(92, 32, 182, 0.15) 40%, transparent 70%);
+  }
+  
+  .text-gradient-siri {
+    background: linear-gradient(135deg, #F43881 0%, #d3bbff 50%, #50d7ef 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px var(--primary-glow);
+  }
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
-}
-
-/* Glassmorphism utility */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-}
-
-.glow {
-  box-shadow: 0 0 20px var(--primary-glow);
-}
-
-.text-glow {
-  text-shadow: 0 0 10px var(--primary-glow);
-}
-
-/* Animations */
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Grid background */
