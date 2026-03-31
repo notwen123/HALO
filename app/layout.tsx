@@ -36,7 +36,7 @@ export default function RootLayout({
                 <ConnectKitButton />
               </div>
             </header>
-            <main className="flex-1 px-8 py-8">
+            <main className="flex-1">
               {children}
             </main>
           </div>
