@@ -87,7 +87,7 @@ export default function Dashboard() {
               <Zap className="w-4 h-4 text-primary" />
             </div>
             <div className="text-4xl font-bold tracking-tighter">
-              {balanceData?.formatted || "0.00"} <span className="text-primary text-xl font-normal ml-1">FLOW</span>
+              {balanceData?.value ? (Number(balanceData.value) / 1e18).toFixed(2) : "0.00"} <span className="text-primary text-xl font-normal ml-1">FLOW</span>
             </div>
           </div>
           <div className="glass p-6">

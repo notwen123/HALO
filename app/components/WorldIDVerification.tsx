@@ -1,6 +1,6 @@
 "use client";
 
-import { IDKitWidget, VerificationLevel, ISuccessResult } from "@worldcoin/idkit";
+import { IDKitRequestWidget, orbLegacy, IDKitResult } from "@worldcoin/idkit";
 import { ShieldCheck, UserCheck } from "lucide-react";
 import { useState } from "react";
 
@@ -11,20 +11,24 @@ import { useState } from "react";
 export default function WorldIDGuardian({ 
   onVerified 
 }: { 
-  onVerified: (result: ISuccessResult) => void 
+  onVerified: (result: IDKitResult) => void 
 }) {
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleVerify = async (result: ISuccessResult) => {
+  const handleVerify = async (result: IDKitResult) => {
     console.log("[WorldID] Human Identity Proof received:", result);
-    // In a real app, we verify the proof on our backend/Next.js API route
-    // For the hackathon demo, we'll verify and allow the action
+    
     const res = await fetch("/api/verify-proof", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(result),
     });
     
-    if (res.ok) {
+    const verifyRes = await res.json();
+
+    if (res.ok && verifyRes.success) {
        onVerified(result);
     } else {
        throw new Error("Human verification failed. Protection remains ACTIVE.");
@@ -32,22 +36,23 @@ export default function WorldIDGuardian({
   };
 
   return (
-    <IDKitWidget
-      app_id="app_staging_08004..." // Placeholder for testing
+    <IDKitRequestWidget
+      app_id="app_staging_08004"
       action="guardian-killswitch"
-      verification_level={VerificationLevel.Orb}
+      onOpenChange={setIsOpen}
+      open={isOpen}
       handleVerify={handleVerify}
       onSuccess={(result) => console.log("Guardian Proof Verified!", result)}
+      auto_legacy_proofs={true}
+      preset={orbLegacy()}
     >
-      {({ open }) => (
         <button
-          onClick={open}
+          onClick={() => setIsOpen(true)}
           className="flex items-center gap-2 px-6 py-2 bg-accent/20 text-accent rounded-lg border border-accent/30 hover:bg-accent/30 transition-all font-medium"
         >
           <UserCheck className="w-4 h-4" />
           Verify Human Guardian
         </button>
-      )}
-    </IDKitWidget>
+    </IDKitRequestWidget>
   );
 }

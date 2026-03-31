@@ -30,11 +30,10 @@ export default function RootLayout({
                 <div className="w-8 h-8 rounded-lg bg-primary glow flex items-center justify-center">
                   <span className="text-background font-bold text-xl">H</span>
                 </div>
-                <div className="text-4xl font-bold tracking-tighter">
-              {balanceData?.value ? (Number(balanceData.value) / 1e18).toFixed(2) : "0.00"} <span className="text-primary text-xl font-normal ml-1">FLOW</span>
-            </div>
+                <h1 className="text-xl font-bold tracking-tighter text-glow">HALO <span className="text-primary opacity-50 font-normal">GUARDIAN</span></h1>
+              </div>
               <div id="connect-wallet-container">
-                <ConnectKitProvider>
+                <ConnectKitButton />
               </div>
             </header>
             <main className="flex-1 px-8 py-8">
