@@ -24,7 +24,7 @@
     "wagmi": "^3.6.0"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -34,5 +34,6 @@
     "hardhat": "^3.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "type": "module"
 }
