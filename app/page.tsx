@@ -105,11 +105,11 @@ export default function BillionDollarLanding() {
          
          <div className="max-w-5xl mx-auto space-y-24">
             <ParallaxWrapper offset={-80}>
-               <h2 className="text-7xl md:text-[14rem] font-black italic tracking-tighter leading-[0.75] uppercase text-white">
+               <h2 className="text-7xl md:text-[14rem] font-black tracking-tighter leading-[0.75] uppercase text-white">
                   JOIN THE<br />
-                  <span className="text-primary glow-text italic">EVOLUTION.</span>
+                  <span className="text-primary glow-text">EVOLUTION.</span>
                </h2>
-               <p className="text-zinc-700 text-xl md:text-3xl font-medium max-w-4xl mx-auto italic leading-tight pt-10">
+               <p className="text-zinc-700 text-xl md:text-3xl font-medium max-w-4xl mx-auto leading-tight pt-10">
                   "Protocol activation is by invite only. Initialize your proof of autonomy to begin the onboarding sequence."
                </p>
             </ParallaxWrapper>
@@ -134,10 +134,10 @@ export default function BillionDollarLanding() {
          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
             <div className="col-span-1 md:col-span-2 space-y-12">
                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-black font-black italic text-2xl">H</div>
-                  <h1 className="text-5xl font-black italic tracking-tighter uppercase text-white shadow-lg">HALO</h1>
+                  <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-black font-black text-2xl">H</div>
+                  <h1 className="text-5xl font-black tracking-tighter uppercase text-white shadow-lg">HALO</h1>
                </div>
-               <p className="text-white/20 text-lg max-w-md italic font-medium leading-relaxed">
+               <p className="text-white/20 text-lg max-w-md font-medium leading-relaxed">
                   The billion-dollar autonomous security protocol built for the decentralised era. 
                   Guarding your future with intelligence that never sleeps.
                </p>
@@ -146,7 +146,7 @@ export default function BillionDollarLanding() {
             <div className="grid grid-cols-2 gap-20 col-span-1 md:col-span-2">
                <div className="space-y-8">
                   <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">PROTOCOL</h4>
-                  <ul className="space-y-4 text-white font-black italic text-xl uppercase tracking-tighter">
+                  <ul className="space-y-4 text-white font-black text-xl uppercase tracking-tighter">
                      <li className="hover:text-primary transition-colors cursor-pointer">Vault</li>
                      <li className="hover:text-primary transition-colors cursor-pointer">Intel</li>
                      <li className="hover:text-primary transition-colors cursor-pointer">Nodes</li>
@@ -155,7 +155,7 @@ export default function BillionDollarLanding() {
                </div>
                <div className="space-y-8">
                   <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">INFO</h4>
-                  <ul className="space-y-4 text-white font-black italic text-xl uppercase tracking-tighter">
+                  <ul className="space-y-4 text-white font-black text-xl uppercase tracking-tighter">
                      <li className="hover:text-primary transition-colors cursor-pointer">Github</li>
                      <li className="hover:text-primary transition-colors cursor-pointer">Whitepaper</li>
                      <li className="hover:text-primary transition-colors cursor-pointer">Flow EVM</li>

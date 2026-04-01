@@ -137,7 +137,7 @@ HALO strongly targets:
 
 ---
 
-## Team
+## Team:
 Built by [Your Name] for PL_Genesis 2026
 https://my.spline.design/untitled-Y9aOtfNhptRYuQP1jNXi9Z5X/
 ---
