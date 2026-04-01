@@ -9,45 +9,46 @@ import { ShieldCheck, Cpu, Zap, Lock } from "lucide-react";
  */
 export function IntelligenceSection() {
   return (
-    <section id="intel" className="py-32 px-10 max-w-7xl mx-auto overflow-hidden">
-      <div className="grid lg:grid-cols-2 gap-24 items-center">
+    <section id="intel" className="py-60 px-10 max-w-7xl mx-auto overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-32 items-center">
         <motion.div
-           initial={{ opacity: 0, x: -50 }}
-           whileInView={{ opacity: 1, x: 0 }}
+           initial={{ opacity: 0, y: 50 }}
+           whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
-           transition={{ duration: 0.8 }}
+           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="text-5xl md:text-8xl font-bold tracking-tighter mb-8 text-white">
-            HALO Intelligence.<br />
-            <span className="text-gradient-siri">All-new powers.</span>
+          <h2 className="text-6xl md:text-8xl font-black tracking-tighter mb-10 text-white leading-none">
+            HALO INTELLIGENCE.<br />
+            <span className="text-primary glow-text">ALL-NEW POWERS.</span>
           </h2>
-          <p className="text-xl md:text-2xl text-on-surface-variant leading-relaxed mb-8 max-w-lg font-medium italic">
+          <p className="text-2xl md:text-3xl text-white/40 leading-relaxed mb-10 max-w-xl font-medium uppercase tracking-tight">
             HALO is more capable than ever, with a whole new design and richer threat understanding. 
             It takes action across your vaults and gives you security that’s tailored to your unique context.
           </p>
         </motion.div>
         
         <motion.div
-           initial={{ opacity: 0, scale: 0.9 }}
+           initial={{ opacity: 0, scale: 0.95 }}
            whileInView={{ opacity: 1, scale: 1 }}
            viewport={{ once: true }}
-           className="relative aspect-square rounded-[3rem] overflow-hidden bg-surface-container-low group border border-white/5"
+           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+           className="relative aspect-square rounded-luxury overflow-hidden bg-surface-container group border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)]"
         >
           {/* Luminous Edge UI Mockup Overlay */}
-          <div className="absolute inset-0 ring-[20px] ring-inset ring-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-10" />
+          <div className="absolute inset-0 ring-[40px] ring-inset ring-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 z-10" />
           
           <img 
             alt="HALO Pulse Edge UI" 
-            className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-1000"
+            className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-1000"
             src="https://images.unsplash.com/photo-1639322537228-f710d846310a?auto=format&fit=crop&q=80&w=1000" 
           />
           
           {/* Glass Overlay with Stats */}
-          <div className="absolute bottom-10 left-10 right-10 glass-card p-10 rounded-[2rem] z-20">
-             <div className="flex items-center gap-4 mb-2 font-mono text-[10px] tracking-widest text-primary font-black uppercase">
-                <Cpu className="w-4 h-4" /> GUARDIAN_ENGINE_ACTIVE
+          <div className="absolute bottom-12 left-12 right-12 glass-billion p-12 rounded-luxury z-20">
+             <div className="flex items-center gap-4 mb-4 font-mono text-[10px] tracking-[0.5em] text-primary font-black uppercase">
+                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" /> GUARDIAN_ENGINE_CONNECTED
              </div>
-             <div className="text-3xl font-black italic tracking-tighter text-white">
+             <div className="text-4xl font-black tracking-tighter text-white uppercase leading-none">
                 "HEH-LO, YOUR ASSETS ARE SECURE."
              </div>
           </div>

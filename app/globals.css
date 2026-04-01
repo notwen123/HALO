@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
+  --background: #000000;
   --foreground: #ffffff;
   --primary: #d3bbff;
   --secondary: #ffb1c4;
@@ -9,7 +9,7 @@
   --surface: #0a0a0a;
   --surface-container: #1b1b1b;
   --on-surface-variant: rgba(255, 255, 255, 0.7);
-  --primary-glow: rgba(211, 187, 255, 0.4);
+  --primary-glow: rgba(211, 187, 255, 0.6);
 }
 
 @theme {
@@ -24,22 +24,28 @@
 
 @layer utilities {
   .glass-billion {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(60px);
+    -webkit-backdrop-filter: blur(60px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.82);
   }
   
   .siri-sphere {
-    background: radial-gradient(circle at center, rgba(211, 187, 255, 0.15) 0%, rgba(244, 56, 129, 0.1) 40%, transparent 70%);
+    background: radial-gradient(circle at center, rgba(211, 187, 255, 0.2) 0%, rgba(244, 56, 129, 0.1) 40%, transparent 70%);
   }
   
   .text-glow {
-    text-shadow: 0 0 30px var(--primary-glow);
+    text-shadow: 0 0 40px rgba(211, 187, 255, 0.4);
   }
 
   .mask-radial {
     mask-image: radial-gradient(circle at center, black, transparent 80%);
+  }
+
+  /* Luxury Curves Utility */
+  .rounded-luxury {
+    border-radius: 3.5rem;
   }
 }
 
@@ -52,23 +58,12 @@ html.lenis {
   scroll-behavior: auto !important;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
-}
-
 body {
   background-color: var(--background);
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Grid background */

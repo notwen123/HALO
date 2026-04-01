@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Lock, ShieldCheck, ArrowRight, EyeOff } from "lucide-react";
+import { MagneticButton } from "../luxury/MagneticButton";
 
 /**
  * @title PrivacySection
@@ -9,50 +10,53 @@ import { Lock, ShieldCheck, ArrowRight, EyeOff } from "lucide-react";
  */
 export function PrivacySection() {
   return (
-    <section className="py-40 bg-surface-container-lowest border-t border-white/5 relative overflow-hidden">
+    <section className="py-60 bg-black border-t border-white/5 relative overflow-hidden">
       {/* Subtle Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 bg-primary/5 blur-[160px] rounded-full pointer-events-none" />
       
-      <div className="max-w-4xl mx-auto px-10 text-center relative z-10 space-y-12">
+      <div className="max-w-5xl mx-auto px-10 text-center relative z-10 space-y-16">
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="inline-flex items-center justify-center w-28 h-28 rounded-full bg-primary/10 border border-primary/20 shadow-2xl group overflow-hidden"
+          className="inline-flex items-center justify-center w-32 h-32 rounded-luxury glass-billion shadow-2xl group overflow-hidden mx-auto"
         >
-          <Lock className="text-primary w-12 h-12 group-hover:scale-110 transition-transform duration-500" />
+          <Lock className="text-primary w-14 h-14 group-hover:scale-110 transition-transform duration-500" />
           <div className="absolute inset-0 bg-primary/10 animate-pulse pointer-events-none" />
         </motion.div>
         
         <motion.h2 
-           initial={{ opacity: 0, y: 20 }}
+           initial={{ opacity: 0, y: 30 }}
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
-           className="text-6xl md:text-9xl font-black italic tracking-tighter text-white"
+           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+           className="text-7xl md:text-[10rem] font-black tracking-tighter text-white uppercase leading-[0.8] mb-12"
         >
            DESIGNED FOR<br />
-           <span className="text-gradient-siri">UNCOMPROMISED PRIVACY.</span>
+           <span className="text-primary glow-text">PRIVACY.</span>
         </motion.h2>
         
         <motion.p 
-           initial={{ opacity: 0, y: 20 }}
+           initial={{ opacity: 0, y: 30 }}
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
-           transition={{ delay: 0.2 }}
-           className="text-xl md:text-3xl text-on-surface-variant font-medium italic leading-relaxed max-w-3xl mx-auto pb-12"
+           transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+           className="text-2xl md:text-4xl text-white/40 font-medium uppercase tracking-tight leading-none max-w-4xl mx-auto pb-20"
         >
            With HALO Intelligence, every action is designed to protect your autonomy. 
-           Most processing happens in your private enclave, and for larger requests, 
-           Private Cloud Compute ensures your data is never stored or shared with external agents.
+           Processing happens in your private enclave, and Private Cloud Compute ensures your data is never stored.
         </motion.p>
         
-        <motion.button 
-           whileHover={{ scale: 1.05 }}
-           whileTap={{ scale: 0.95 }}
-           className="text-primary text-xl font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:underline mx-auto"
+        <motion.div 
+           initial={{ opacity: 0, y: 30 }}
+           whileInView={{ opacity: 1, y: 0 }}
+           viewport={{ once: true }}
+           transition={{ delay: 0.4 }}
         >
-          EXPLORING_LOCAL_ENCLAVE <ArrowRight className="w-6 h-6" />
-        </motion.button>
+           <MagneticButton strength={40}>
+              EXPLORE_ENCLAVE <ArrowRight className="w-8 h-8 ml-4" />
+           </MagneticButton>
+        </motion.div>
       </div>
     </section>
   );

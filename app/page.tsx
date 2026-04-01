@@ -1,151 +1,173 @@
 "use client";
 
-import { StitchNavbar } from "./components/stitch/StitchNavbar";
+import { FloatingIsland } from "./components/luxury/FloatingIsland";
+import { MagneticButton } from "./components/luxury/MagneticButton";
+import { ParallaxWrapper } from "./components/luxury/ParallaxWrapper";
 import { StitchHero } from "./components/stitch/StitchHero";
 import { IntelligenceSection } from "./components/stitch/IntelligenceSection";
 import { BentoGrid } from "./components/stitch/BentoGrid";
 import { PrivacySection } from "./components/stitch/PrivacySection";
-import { motion } from "framer-motion";
-import { Plus, ArrowRight } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Shield, Zap, Lock, Activity, ArrowRight, Play, Cpu, Globe, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { useRef, useState, useEffect } from "react";
 
 /**
- * @title HALO_STITCH_LANDING
- * @dev Replicating the 'Siri' premium quality UI for the HALO Protocol.
+ * @title HALO_BILLION_DOLLAR_LANDING
+ * @dev Replicating the absolute pinnacle of luxury UI inspired by Stitch/Apple.
  */
-export default function StitchLandingPage() {
+export default function BillionDollarLanding() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  
+  // Billion Dollar Transform (Moved to top level to follow Rule of Hooks)
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null;
+
   return (
-    <div className="bg-background text-foreground font-sans selection:bg-primary/30 min-h-screen">
-      <StitchNavbar />
+    <div ref={containerRef} className="relative bg-[#0a0a0a] text-white selection:bg-primary/30 selection:text-white">
+      {/* 0. FLOATING ISLAND NAVIGATION */}
+      <FloatingIsland />
       
-      <main className="pt-16">
-        {/* HERO SECTION */}
-        <StitchHero />
+      {/* 1. IMMERSIVE PARALLAX HERO */}
+      <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
+         {/* Siri Gradient Spheres */}
+         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] siri-sphere blur-[120px] rounded-full opacity-30 animate-pulse" />
+         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] siri-sphere blur-[100px] rounded-full opacity-20 animate-pulse-slow" />
+         
+         <div className="absolute inset-x-0 bottom-0 siri-glow h-[400px] opacity-40 pointer-events-none" />
+         
+         <div className="relative z-10 text-center px-6 flex flex-col items-center gap-20">
+            <ParallaxWrapper offset={120}>
+               <motion.h1 
+                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                 animate={{ opacity: 1, y: 0, scale: 1 }}
+                 className="text-[10rem] md:text-[16rem] font-black tracking-tighter leading-none uppercase text-white"
+               >
+                 HALO
+               </motion.h1>
+            </ParallaxWrapper>
 
-        {/* INTELLIGENCE SECTION */}
-        <IntelligenceSection />
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.3 }}
+               className="space-y-6"
+            >
+              <p className="text-2xl md:text-3xl font-medium text-white/40 max-w-3xl mx-auto leading-relaxed">
+                 Autonomous AI security for your digital assets. <br className="hidden md:block" /> 
+                 Luxury, uncompromised.
+              </p>
+            </motion.div>
+            
+            <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.5 }}
+               className="flex flex-col sm:flex-row items-center justify-center gap-12 pt-10"
+            >
+               <MagneticButton strength={40}>
+                  INITIALIZE VAULT <ArrowRight className="w-8 h-8 ml-4 group-hover:translate-x-2 transition-transform" />
+               </MagneticButton>
+               <button className="text-white/30 text-xl font-black uppercase tracking-[0.5em] hover:text-white transition-colors flex items-center gap-6 group">
+                  <Play className="w-8 h-8 fill-current group-hover:rotate-12 transition-transform" /> WATCH_THE_FILM
+               </button>
+            </motion.div>
+         </div>
+         
+         {/* Adaptive Scroll Indicator */}
+         <motion.div 
+           style={{ opacity: scrollIndicatorOpacity }}
+           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
+         >
+            <div className="text-[9px] font-mono tracking-[0.8em] text-white/20 uppercase font-black">SCROLL_FOR_INTEL</div>
+            <div className="w-[1px] h-20 bg-gradient-to-b from-primary to-transparent" />
+         </motion.div>
+      </section>
 
-        {/* BENTO GRID OF USE CASES */}
-        <BentoGrid />
+      {/* 2. THE INTELLIGENCE SECTION (Parallax Textures) */}
+      <div className="relative z-20">
+         <IntelligenceSection />
+      </div>
 
-        {/* PRIVACY HIGHLIGHT */}
-        <PrivacySection />
+      {/* 3. BENTO GRID (Billion Dollar Tier) */}
+      <div className="relative z-20 bg-surface py-20 px-10">
+         <BentoGrid />
+      </div>
 
-        {/* CAPABILITIES / APPS GRID (Branded for Protocols) */}
-        <section className="py-40 px-10 max-w-7xl mx-auto text-center space-y-24">
-           <motion.h2 
-             initial={{ opacity: 0, y: 20 }}
-             whileInView={{ opacity: 1, y: 0 }}
-             className="text-4xl md:text-6xl font-black italic tracking-tighter text-white"
-           >
-              HALO works across the ecosystem.
-           </motion.h2>
-           
-           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
-              {[
-                { name: "Flow EVM", icon: "F" },
-                { name: "Uniswap", icon: "U" },
-                { name: "Aave", icon: "A" },
-                { name: "Compound", icon: "C" },
-                { name: "Curve", icon: "V" },
-                { name: "MakerDAO", icon: "M" },
-              ].map((app, i) => (
-                <motion.div 
-                  key={i}
-                  whileHover={{ y: -10 }}
-                  className="flex flex-col items-center gap-6 group cursor-pointer"
-                >
-                  <div className="w-24 h-24 rounded-[2rem] bg-surface-container-high flex items-center justify-center group-hover:bg-primary/20 transition-all border border-white/5 shadow-xl">
-                     <span className="text-3xl font-black italic text-zinc-500 group-hover:text-primary transition-colors">{app.icon}</span>
-                  </div>
-                  <span className="font-mono text-[10px] tracking-widest text-zinc-600 uppercase font-black">{app.name}</span>
-                </motion.div>
-              ))}
-           </div>
-        </section>
+      {/* 4. THE VAULT (Final CTA) */}
+      <section className="relative z-20 h-screen flex flex-col items-center justify-center text-center px-10 border-t border-white/5 bg-black">
+         <div className="absolute inset-0 siri-glow opacity-10 pointer-events-none" />
+         
+         <div className="max-w-5xl mx-auto space-y-24">
+            <ParallaxWrapper offset={-80}>
+               <h2 className="text-7xl md:text-[14rem] font-black italic tracking-tighter leading-[0.75] uppercase text-white">
+                  JOIN THE<br />
+                  <span className="text-primary glow-text italic">EVOLUTION.</span>
+               </h2>
+               <p className="text-zinc-700 text-xl md:text-3xl font-medium max-w-4xl mx-auto italic leading-tight pt-10">
+                  "Protocol activation is by invite only. Initialize your proof of autonomy to begin the onboarding sequence."
+               </p>
+            </ParallaxWrapper>
 
-        {/* FINAL CTA */}
-        <section className="py-60 text-center px-10 relative overflow-hidden">
-           <div className="absolute inset-x-0 bottom-0 siri-glow h-[400px] opacity-20 pointer-events-none" />
-           
-           <motion.div
-             initial={{ opacity: 0, scale: 0.95 }}
-             whileInView={{ opacity: 1, scale: 1 }}
-             className="space-y-16 relative z-10"
-           >
-              <h2 className="text-[10rem] md:text-[18rem] font-black tracking-tighter mb-12 text-white italic leading-none opacity-10">
-                 HALO.
-              </h2>
-              
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
-                 <Link href="/dashboard">
-                   <button className="bg-white text-black px-12 py-6 rounded-full font-black text-2xl hover:bg-zinc-200 transition-all active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.2)]">
-                      Initialize Vault
-                   </button>
-                 </Link>
-                 <button className="bg-surface-container-high text-white px-12 py-6 rounded-full font-black text-2xl hover:bg-surface-bright transition-all active:scale-95 border border-white/5">
-                    Watch the film
-                 </button>
-              </div>
-           </motion.div>
-        </section>
-      </main>
+            <motion.div 
+               initial={{ opacity: 0, y: 30 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               className="flex flex-col items-center gap-10"
+            >
+               <MagneticButton strength={60} className="scale-125">
+                  INITIALIZE_GUARD <ArrowUpRight className="w-8 h-8 ml-4" />
+               </MagneticButton>
+               <div className="text-[10px] font-mono tracking-[0.6em] text-zinc-800 uppercase font-bold animate-pulse">
+                  PRIVATE_ENCLAVE_ACTIVE // SECURED_BY_FLOW_EVM
+               </div>
+            </motion.div>
+         </div>
+      </section>
 
-      {/* FOOTER */}
-      <footer className="bg-surface-container-low w-full pt-20 pb-10 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-10">
-          <div className="grid md:grid-cols-4 gap-20 mb-20">
-            <FooterCol 
-              title="VAULT" 
-              links={["Mac Protected", "iPad Enclave", "iPhone Core", "Watch Sentinel"]} 
-            />
-            <FooterCol 
-              title="PROTOCOLS" 
-              links={["HALO Yield", "Defensive DEX", "Guardian LP", "Flow EVM Core"]} 
-            />
-            <FooterCol 
-              title="AUTONOMY" 
-              links={["Local Enclave", "Proof of Human", "World ID Hub", "Private Compute"]} 
-            />
-            <FooterCol 
-              title="PROTOCOL" 
-              links={["Manifesto", "Open Architecture", "Investors", "Global Defense"]} 
-            />
-          </div>
-          
-          <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
-             <div className="flex items-center gap-6 text-[10px] font-mono tracking-widest text-zinc-700 uppercase font-bold">
-               <span>COPYRIGHT © 2026 HALO INC.</span>
-               <div className="w-1 h-1 bg-zinc-900 rounded-full" />
-               <span>ALL SYSTEMS OPERATIONAL</span>
-             </div>
-             
-             <div className="flex flex-wrap justify-center gap-10 text-[10px] font-mono tracking-widest text-white/40 uppercase font-black">
-                <a href="#" className="hover:text-primary transition-colors">PRIVACY</a>
-                <a href="#" className="hover:text-primary transition-colors">TERMS</a>
-                <a href="#" className="hover:text-primary transition-colors">HARDWARE</a>
-                <a href="#" className="hover:text-primary transition-colors">LEGAL</a>
-             </div>
-          </div>
-        </div>
+      {/* 5. FOOTER (Billion Dollar Luxury) */}
+      <footer className="relative z-20 py-40 px-12 border-t border-white/5 bg-[#0a0a0a]">
+         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
+            <div className="col-span-1 md:col-span-2 space-y-12">
+               <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-black font-black italic text-2xl">H</div>
+                  <h1 className="text-5xl font-black italic tracking-tighter uppercase text-white shadow-lg">HALO</h1>
+               </div>
+               <p className="text-white/20 text-lg max-w-md italic font-medium leading-relaxed">
+                  The billion-dollar autonomous security protocol built for the decentralised era. 
+                  Guarding your future with intelligence that never sleeps.
+               </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-20 col-span-1 md:col-span-2">
+               <div className="space-y-8">
+                  <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">PROTOCOL</h4>
+                  <ul className="space-y-4 text-white font-black italic text-xl uppercase tracking-tighter">
+                     <li className="hover:text-primary transition-colors cursor-pointer">Vault</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Intel</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Nodes</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Yield</li>
+                  </ul>
+               </div>
+               <div className="space-y-8">
+                  <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">INFO</h4>
+                  <ul className="space-y-4 text-white font-black italic text-xl uppercase tracking-tighter">
+                     <li className="hover:text-primary transition-colors cursor-pointer">Github</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Whitepaper</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Flow EVM</li>
+                     <li className="hover:text-primary transition-colors cursor-pointer">Audit</li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <div className="text-center mt-40 text-[9px] font-mono text-zinc-900 tracking-[1em] uppercase font-black">
+            © 2026_HALO_OS // BILLION_DOLLAR_UI_ACTIVE
+         </div>
       </footer>
-    </div>
-  );
-}
-
-function FooterCol({ title, links }: { title: string, links: string[] }) {
-  return (
-    <div className="space-y-8">
-       <h4 className="text-white font-black italic tracking-widest text-xs opacity-40 uppercase tracking-[0.4em]">{title}</h4>
-       <ul className="space-y-4">
-          {links.map((link, i) => (
-            <li key={i}>
-              <a href="#" className="text-sm font-black italic uppercase tracking-wider text-zinc-500 hover:text-primary transition-colors">
-                 {link}
-              </a>
-            </li>
-          ))}
-       </ul>
     </div>
   );
 }
