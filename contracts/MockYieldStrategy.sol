@@ -10,7 +10,7 @@ import "./interfaces/IYieldStrategy.sol";
 contract MockYieldStrategy is IYieldStrategy {
     uint256 public totalDeposits;
 
-    function deposit(uint256 amount) external returns (bool) {
+    function deposit(uint256 amount) external payable returns (bool) {
         totalDeposits += amount;
         return true;
     }

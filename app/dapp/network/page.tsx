@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Zap, Globe, Activity, Database, Cpu, Network as NetworkIcon, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useBlockNumber, useBalance, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { VAULT_ADDRESS, AGENT_IDENTITY_ADDRESS, IDENTITY_ABI } from "@/app/constants/contracts";
@@ -12,6 +13,10 @@ import { VAULT_ADDRESS, AGENT_IDENTITY_ADDRESS, IDENTITY_ABI } from "@/app/const
  * Fully integrated with live network metrics and vault performance data.
  */
 export default function NetworkPage() {
+  useEffect(() => {
+    document.title = "NETWORK | HALO OS";
+  }, []);
+
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const { data: vaultBalance } = useBalance({ address: VAULT_ADDRESS });
   
@@ -27,7 +32,7 @@ export default function NetworkPage() {
     : "0.00";
 
   const stats = [
-    { label: "Active Guards", value: totalAgents ? totalAgents.toString() : "---", sub: "Verified Agents", icon: Globe },
+    { label: "In-Cluster Guardians", value: totalAgents ? totalAgents.toString() : "---", sub: "Total Protocol Population", icon: Globe },
     { label: "Protocol Sync", value: "100%", sub: "Node Consensus", icon: Activity },
     { label: "Vault Locked", value: `${tvl} FLOW`, sub: "Liquidity TVL", icon: Database },
     { label: "Chain Height", value: blockNumber ? blockNumber.toLocaleString() : "---", sub: "Block Index State", icon: Cpu },
@@ -70,7 +75,6 @@ export default function NetworkPage() {
                 <p className="text-label !text-black/30 !tracking-widest uppercase mb-2">{stat.label}</p>
                 <div className="flex items-baseline gap-4">
                   <p className="text-5xl font-black tracking-tighter uppercase font-heading">{stat.value}</p>
-                  {stat.value === "---" && <Loader2 className="w-6 h-6 animate-spin text-black/10" />}
                 </div>
                 <p className="text-xs font-bold text-black/30 uppercase tracking-widest font-sans mt-2 italic opacity-60">{stat.sub}</p>
               </div>

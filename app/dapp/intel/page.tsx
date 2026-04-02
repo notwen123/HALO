@@ -5,14 +5,16 @@ import { Activity, ShieldCheck, Zap, Globe, Cpu, AlertTriangle, Terminal, Layers
 import { useState, useEffect } from "react";
 import { useBlockNumber, useGasPrice, useReadContract, usePublicClient, useWatchContractEvent } from "wagmi";
 import { formatUnits } from "viem";
-import { AGENT_IDENTITY_ADDRESS, IDENTITY_ABI, GUARDIAN_REGISTRY_ADDRESS, REGISTRY_ABI } from "@/app/constants/contracts";
+import { AGENT_IDENTITY_ADDRESS, IDENTITY_ABI, GUARDIAN_REGISTRY_ADDRESS, REGISTRY_ABI, VAULT_ADDRESS, VAULT_ABI } from "@/app/constants/contracts";
 
 /**
  * @title IntelModule
- * @dev High-end Network Intelligence & Security Audit Log for the HALO dApp.
- * Fully integrated with live Flow EVM Testnet events and agent registration data.
  */
 export default function IntelPage() {
+  useEffect(() => {
+    document.title = "INTEL | HALO OS";
+  }, []);
+
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const { data: gasPrice } = useGasPrice();
   const publicClient = usePublicClient();
@@ -31,9 +33,9 @@ export default function IntelPage() {
     if (!publicClient) return;
     try {
       const currentBlock = await publicClient.getBlockNumber();
-      const fromBlock = currentBlock > 9900n ? currentBlock - 9900n : 0n;
+      const fromBlock = currentBlock > 2000n ? currentBlock - 2000n : 0n;
 
-      const [regLogs, assignLogs] = await Promise.all([
+      const [regLogs, assignLogs, depositLogs, withdrawLogs] = await Promise.all([
         publicClient.getLogs({
           address: GUARDIAN_REGISTRY_ADDRESS,
           event: {
@@ -51,20 +53,55 @@ export default function IntelPage() {
             inputs: [{ indexed: true, name: "user", type: "address" }, { indexed: true, name: "agent", type: "address" }]
           },
           fromBlock
+        }),
+        publicClient.getLogs({
+          address: VAULT_ADDRESS,
+          event: {
+            type: "event",
+            name: "Deposit",
+            inputs: [{ indexed: true, name: "user", type: "address" }, { indexed: false, name: "amount", type: "uint256" }]
+          },
+          fromBlock
+        }),
+        publicClient.getLogs({
+          address: VAULT_ADDRESS,
+          event: {
+            type: "event",
+            name: "Withdraw",
+            inputs: [{ indexed: true, name: "user", type: "address" }, { indexed: false, name: "amount", type: "uint256" }]
+          },
+          fromBlock
         })
       ]);
 
-      const allLogs = [...regLogs, ...assignLogs]
+      const allLogs = [...regLogs, ...assignLogs, ...depositLogs, ...withdrawLogs]
         .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber))
-        .map((log: any, i) => ({
-          id: i,
-          type: log.eventName === "AgentRegistered" ? "REGISTRY" : "SECURITY",
-          msg: log.eventName === "AgentRegistered" 
-            ? `New Agent Registered: ${log.args.agent.slice(0, 10)}...` 
-            : `Agent Assigned to User: ${log.args.user.slice(0, 10)}...`,
-          status: "VERIFIED",
-          time: `BLOCK: ${log.blockNumber.toString()}`
-        }));
+        .map((log: any, i) => {
+           let type = "SYSTEM";
+           let msg = "On-chain state change detected";
+           
+           if (log.eventName === "AgentRegistered") {
+             type = "REGISTRY";
+             msg = `New Agent Identity Registered: ${log.args.agent.slice(0, 10)}...`;
+           } else if (log.eventName === "AgentAssigned") {
+             type = "SECURITY";
+             msg = `Agent Guardian Assigned to User: ${log.args.user.slice(0, 10)}...`;
+           } else if (log.eventName === "Deposit") {
+             type = "FINANCE";
+             msg = `Deposit Protocol: ${formatUnits(log.args.amount, 18)} FLOW via ${log.args.user.slice(0, 8)}...`;
+           } else if (log.eventName === "Withdraw") {
+             type = "LIQUIDITY";
+             msg = `Withdraw Protocol: ${formatUnits(log.args.amount, 18)} FLOW via ${log.args.user.slice(0, 8)}...`;
+           }
+
+           return {
+             id: i,
+             type,
+             msg,
+             status: "VERIFIED",
+             time: `BLOCK: ${log.blockNumber.toString()}`
+           };
+        });
 
       setLogs(allLogs);
     } catch (e) {
@@ -123,9 +160,9 @@ export default function IntelPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
          {/* Live Intelligence Activity */}
-         <div className="lg:col-span-8 p-16 rounded-[4.5rem] border border-black/10 bg-white shadow-sm space-y-12 overflow-hidden">
+         <div className="lg:col-span-8 p-16 rounded-[4.5rem] border border-black/10 bg-white shadow-sm space-y-12 overflow-hidden h-[850px] flex flex-col justify-between">
             <div className="flex items-center justify-between border-b border-black/5 pb-12">
                <div className="flex items-center gap-6">
                   <div className="w-16 h-16 bg-black rounded-3xl flex items-center justify-center text-white shadow-2xl">
@@ -172,15 +209,20 @@ export default function IntelPage() {
          </div>
 
          {/* Audit Terminal */}
-         <div className="lg:col-span-4 p-16 rounded-[4.5rem] border border-black/5 bg-black text-white shadow-2xl flex flex-col h-full bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.05),transparent)]">
+         <div className="lg:col-span-4 p-16 rounded-[4.5rem] border border-black/5 bg-black text-white shadow-2xl flex flex-col h-[850px] bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.05),transparent)]">
             <div className="flex items-center gap-5 border-b border-white/10 pb-12 mb-12">
                <div className="p-4 bg-white/10 rounded-2xl">
                   <Terminal className="w-7 h-7 text-green-500" />
                </div>
-               <h3 className="text-2xl font-black tracking-tighter uppercase font-heading">Audit Log</h3>
+               <h3 className="text-2xl font-black tracking-tighter uppercase font-heading text-white">Audit Log</h3>
             </div>
 
-            <div className="flex-1 font-sans text-xs space-y-10 overflow-y-auto pr-2 custom-scrollbar">
+            <div className="flex-1 font-sans text-xs space-y-10 overflow-y-auto pr-2 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+               <style jsx>{`
+                  .scrollbar-none::-webkit-scrollbar {
+                     display: none;
+                  }
+               `}</style>
                {(logs as any[]).map((log: any) => (
                  <motion.div
                    key={log.id}

@@ -1,11 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Cpu, Zap, Activity, RefreshCcw, Server, Database, Shield } from "lucide-react";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Shield, Activity, Cpu, Zap, Globe, Lock, AlertCircle, ShieldAlert, CheckCircle, X, ExternalLink, Server, Database, RefreshCcw, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useBalance, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { formatUnits } from "viem";
-import { VAULT_ADDRESS, AGENT_IDENTITY_ADDRESS, IDENTITY_ABI, MOCK_YIELD_STRATEGY_ADDRESS, STRATEGY_ABI } from "@/app/constants/contracts";
+import { VAULT_ADDRESS, AGENT_IDENTITY_ADDRESS, IDENTITY_ABI, MOCK_YIELD_STRATEGY_ADDRESS, STRATEGY_ABI, REGISTRY_ABI, GUARDIAN_REGISTRY_ADDRESS, VAULT_ABI } from "@/app/constants/contracts";
+import { useAccount } from "wagmi";
+import { parseEther } from "viem";
+import Link from "next/link";
 
 /**
  * @title NodesModule
@@ -13,7 +16,13 @@ import { VAULT_ADDRESS, AGENT_IDENTITY_ADDRESS, IDENTITY_ABI, MOCK_YIELD_STRATEG
  * Now integrated with live Agent NFTs and Yield Strategy metrics on Flow EVM.
  */
 export default function NodesPage() {
+  useEffect(() => {
+    document.title = "INFRASTRUCTURE | HALO OS";
+  }, []);
+
+  const { address } = useAccount();
   const [isClaiming, setIsClaiming] = useState(false);
+  const [txError, setTxError] = useState<string | null>(null);
   
   // 1. Fetch Total Vault Balance as "Pool Assets"
   const { data: vaultBalance } = useBalance({ address: VAULT_ADDRESS });
@@ -25,12 +34,69 @@ export default function NodesPage() {
     functionName: "getBalance",
   });
 
+  const [customAgentName, setCustomAgentName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (address) {
+       const saved = localStorage.getItem(`halo_agent_name_${address}`);
+       if (saved) setCustomAgentName(saved);
+    }
+  }, [address]);
+
   // 3. Fetch Total Agents from Identity Contract
   const { data: totalAgents } = useReadContract({
     address: AGENT_IDENTITY_ADDRESS,
     abi: IDENTITY_ABI,
     functionName: "totalAgents",
   });
+
+  // 3.1 Fetch User's Agent NFT Balance
+  const { data: userNftBalance } = useReadContract({
+    address: AGENT_IDENTITY_ADDRESS,
+    abi: IDENTITY_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+
+  const hasNft = userNftBalance && Number(userNftBalance) > 0;
+
+  // 4. Fetch User's Specific Agent from Registry
+  const { data: userAgentData } = useReadContract({
+    address: GUARDIAN_REGISTRY_ADDRESS,
+    abi: REGISTRY_ABI,
+    functionName: "userToAgent",
+    args: address ? [address] : undefined,
+    query: { enabled: !!address },
+  });
+
+  const hasAgent = userAgentData && userAgentData !== "0x0000000000000000000000000000000000000000";
+
+  // 5. Contract Actions
+  const { writeContract, data: hash, isPending: isTxPending } = useWriteContract();
+  const { isLoading: isTxConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
+
+  const handleHarvest = () => {
+    if (!address) return;
+    setTxError(null);
+    writeContract({
+      address: VAULT_ADDRESS,
+      abi: VAULT_ABI,
+      functionName: "executeProtectionAction",
+      args: [address, MOCK_YIELD_STRATEGY_ADDRESS, parseEther("0.1")], // Simulating harvest for current user
+    });
+  };
+
+  const handleCompound = () => {
+    if (!address) return;
+    setTxError(null);
+    writeContract({
+      address: MOCK_YIELD_STRATEGY_ADDRESS,
+      abi: STRATEGY_ABI,
+      functionName: "deposit",
+      args: [parseEther("0.1")],
+    });
+  };
 
   const formattedVaultTotal = vaultBalance 
     ? Number(formatUnits(vaultBalance.value, vaultBalance.decimals))
@@ -58,11 +124,28 @@ export default function NodesPage() {
         </div>
         <div className="text-right">
            <button 
-             onClick={() => { setIsClaiming(true); setTimeout(() => setIsClaiming(false), 2000); }}
-             className="px-12 py-5 rounded-full bg-black text-white text-label !text-white !tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-4 group"
+             onClick={handleHarvest}
+             disabled={isTxPending || isTxConfirming}
+             className="px-12 h-16 rounded-full bg-black text-white text-label !text-white !tracking-[0.3em] hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center justify-center overflow-hidden group min-w-[280px] disabled:opacity-50"
            >
-              {isClaiming ? <RefreshCcw className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 text-yellow-400 group-hover:rotate-12 transition-transform" />}
-              {isClaiming ? "SYNCHRONIZING..." : "HARVEST_YIELD"}
+              <AnimatePresence mode="wait">
+                 <motion.div
+                   key={isTxPending || isTxConfirming ? "syncing" : "idle"}
+                   initial={{ y: 20, opacity: 0 }}
+                   animate={{ y: 0, opacity: 1 }}
+                   exit={{ y: -20, opacity: 0 }}
+                   className="flex items-center gap-4"
+                 >
+                    {isTxPending || isTxConfirming ? (
+                       <span>SYNCING_POOL...</span>
+                    ) : (
+                       <>
+                          <Zap className="w-5 h-5 text-yellow-400 group-hover:rotate-12 transition-transform" />
+                          <span>HARVEST_YIELD</span>
+                       </>
+                    )}
+                 </motion.div>
+              </AnimatePresence>
            </button>
         </div>
       </div>
@@ -97,26 +180,77 @@ export default function NodesPage() {
 
             {/* High-End Node Monitors */}
             {nodes.map((node, i) => (
-               <div key={i} className="p-12 rounded-[4rem] border border-black/5 bg-white shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden h-[340px] flex flex-col justify-between">
+               <div key={i} className="p-12 rounded-[4rem] border border-black/5 bg-white shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden h-[340px] flex flex-col justify-between hover:bg-black">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-black/[0.015] rounded-bl-[4rem] flex items-center justify-center translate-x-12 -translate-y-12 group-hover:translate-x-0 group-hover:-translate-y-0 transition-transform duration-700">
                      <node.icon className="w-12 h-12 text-black/5 group-hover:text-primary transition-colors" />
                   </div>
-                  <div className="space-y-8 relative z-10">
-                     <div className="flex items-center gap-4">
-                        <div className={`w-2.5 h-2.5 rounded-full ${node.status === "ONLINE" ? "bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.6)]" : "bg-amber-500"} animate-pulse`} />
-                        <span className="text-label !text-black/30">{node.status}</span>
-                     </div>
-                     <div>
-                        <h4 className="text-4xl font-black tracking-tighter uppercase font-heading">{node.id}</h4>
-                        <p className="text-label !text-black/20 !font-mono !tracking-tight">{node.location}</p>
-                     </div>
-                  </div>
-                  <div className="pt-8 border-t border-black/5 flex items-center justify-between relative z-10">
-                     <span className="text-label !text-black/20">RPC_LATENCY_12ms</span>
-                     <span className="text-2xl font-black tracking-tighter text-black font-heading">{node.load}</span>
-                  </div>
+                   <div className="space-y-8 relative z-10 transition-colors">
+                      <div className="flex items-center gap-4">
+                         <div className={`w-2.5 h-2.5 rounded-full ${node.status === "ONLINE" ? "bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.6)]" : "bg-amber-500"} animate-pulse`} />
+                         <span className="text-label !text-black/30 group-hover:!text-white/40 transition-colors">{node.status}</span>
+                      </div>
+                      <div>
+                         <h4 className="text-4xl font-black tracking-tighter uppercase font-heading group-hover:text-primary transition-colors">{node.id}</h4>
+                         <p className="text-label !text-black/20 !font-mono !tracking-tight group-hover:!text-white/20 transition-colors">{node.location}</p>
+                      </div>
+                   </div>
+                   <div className="pt-8 border-t border-black/5 flex items-center justify-between relative z-10">
+                      <span className="text-label !text-black/20 group-hover:!text-white/20 transition-colors">RPC_LATENCY_12ms</span>
+                      <span className="text-2xl font-black tracking-tighter text-black group-hover:text-white transition-colors">{node.load}</span>
+                   </div>
                </div>
             ))}
+
+            {/* Your Provisioned Guardians */}
+            <div className="p-12 rounded-[4rem] border border-black/5 bg-white shadow-sm hover:shadow-2xl transition-all group relative overflow-hidden h-auto col-span-1 md:col-span-2">
+               <div className="flex items-center justify-between pb-8 border-b border-black/5">
+                  <div className="flex items-center gap-4">
+                     <Shield className="w-6 h-6 text-primary" />
+                     <p className="text-label !text-black !tracking-widest capitalize">YOUR_ACTIVE_GUARDIANS</p>
+                  </div>
+                  <span className="text-label !text-black/20 uppercase font-mono">{hasAgent ? "1 ACTIVE" : (hasNft ? "1 UNBOUND" : "0 DISCOVERED")}</span>
+               </div>
+               
+                <div className="pt-8">
+                  {hasAgent ? (
+                    <div className="p-10 rounded-[3rem] bg-black/5 border border-black/5 flex items-center justify-between group/card hover:bg-black hover:text-white transition-all duration-500">
+                        <div className="space-y-2">
+                           <h4 className="text-3xl font-black tracking-tighter uppercase font-heading group-hover/card:text-white transition-colors">
+                              {customAgentName || "SENTRY_OS_ALPHA"}
+                           </h4>
+                           <p className="text-label !tracking-tight opacity-40 group-hover/card:opacity-100 transition-opacity font-mono text-sm">{userAgentData as string}</p>
+                        </div>
+                        <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center group-hover/card:bg-white/10 transition-colors">
+                           <Activity className="w-6 h-6 text-green-500 group-hover/card:text-green-400" />
+                        </div>
+                    </div>
+                  ) : hasNft ? (
+                    <div className="p-10 rounded-[3rem] bg-amber-500/5 border border-amber-500/20 flex flex-col gap-6 group/dormant hover:bg-black transition-all duration-500">
+                       <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                             <h4 className="text-2xl font-black tracking-tighter uppercase text-amber-600 font-heading group-hover/dormant:text-amber-400 transition-colors">DORMANT_IN_VAULT</h4>
+                             <p className="text-xs font-mono opacity-40 uppercase tracking-tighter group-hover/dormant:text-white/40 transition-colors">Identity Found but Not Linked to Security Core</p>
+                          </div>
+                          <div className="w-12 h-12 bg-amber-500/20 rounded-2xl flex items-center justify-center animate-pulse group-hover/dormant:bg-white/10 transition-colors">
+                             <RefreshCcw className="w-5 h-5 text-amber-500" />
+                          </div>
+                       </div>
+                       <Link 
+                         href="/dapp/security"
+                         className="flex items-center justify-center gap-3 py-4 rounded-2xl bg-black text-white text-[10px] font-black tracking-[0.2em] hover:bg-primary border border-white/10 transition-colors group/link"
+                       >
+                          <span>LINK_TO_SECURITY_CORE</span>
+                          <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
+                       </Link>
+                    </div>
+                  ) : (
+                    <div className="py-12 text-center space-y-4">
+                       <p className="text-label !text-black/20">NO_GUARD_ACTIVE_IN_CLUSTER</p>
+                       <p className="text-xs font-mono opacity-30 px-20">INITIALIZE IDENTITY NFT TO PROVISION INNODES TAB</p>
+                    </div>
+                  )}
+               </div>
+            </div>
          </div>
 
          {/* Elite Yield Hub */}
@@ -126,7 +260,7 @@ export default function NodesPage() {
                   <div className="p-4 bg-white/10 rounded-2xl shadow-inner">
                      <Zap className="w-7 h-7 text-yellow-400" />
                   </div>
-                  <h3 className="text-3xl font-black tracking-tighter uppercase font-heading">Protocol APY</h3>
+                  <h3 className="text-3xl font-black tracking-tighter uppercase font-heading text-white">Protocol APY</h3>
                </div>
                
                <div className="py-16 border-y border-white/5 space-y-4 text-center relative">
@@ -140,12 +274,16 @@ export default function NodesPage() {
                </div>
             </div>
 
-            <div className="space-y-8 pt-12">
-               <button className="w-full py-7 rounded-[2.5rem] bg-white text-black text-label !tracking-[0.4em] hover:scale-[1.05] active:scale-95 transition-all shadow-[0_30px_80px_rgba(255,255,255,0.15)]">
-                  AUTO_COMPOUND
-               </button>
-               <p className="text-center text-label !text-white/20">FLOW_EVM_STAKING_V1</p>
-            </div>
+             <div className="space-y-8 pt-12">
+                <button 
+                  onClick={handleCompound}
+                  disabled={isTxPending || isTxConfirming}
+                  className="w-full py-7 rounded-[2.5rem] bg-white text-black text-label !tracking-[0.4em] hover:scale-[1.05] active:scale-95 transition-all shadow-[0_30px_80px_rgba(255,255,255,0.15)] disabled:opacity-50"
+                >
+                   {isTxPending || isTxConfirming ? "STAKING..." : "AUTO_COMPOUND"}
+                </button>
+                <p className="text-center text-label !text-white/20">FLOW_EVM_STAKING_V1</p>
+             </div>
          </div>
       </div>
     </div>

@@ -7,91 +7,96 @@ import "./GuardianRegistry.sol";
 /**
  * @title GuardianVault
  * @dev The user's secure vault for holding assets and enabling autonomous protection.
+ * Now refactored for Multi-User account mapping (Universal Access).
  */
 contract GuardianVault {
-    address public owner;
     GuardianRegistry public registry;
-    bool public autoProtectionEnabled;
     
-    // Mapping of authorized yield strategies
-    mapping(address => bool) public authorizedStrategies;
+    // Per-user accounting
+    mapping(address => uint256) public balances;
+    mapping(address => bool) public autoProtectionEnabled;
+    mapping(address => mapping(address => bool)) public authorizedStrategies;
 
     event Deposit(address indexed user, uint256 amount);
     event Withdraw(address indexed user, uint256 amount);
-    event ProtectionToggled(bool enabled);
-    event ActionExecuted(address indexed agent, address indexed strategy, uint256 amount);
-    event StrategyAuthorized(address indexed strategy, bool authorized);
+    event ProtectionToggled(address indexed user, bool enabled);
+    event ActionExecuted(address indexed user, address indexed agent, address indexed strategy, uint256 amount);
+    event StrategyAuthorized(address indexed user, address indexed strategy, bool authorized);
 
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this");
+    modifier onlyAuthorizedAgent(address _user) {
+        require(registry.isAuthorized(_user, msg.sender), "Caller is not an authorized agent for this user");
         _;
     }
 
-    modifier onlyAuthorizedAgent() {
-        require(registry.isAuthorized(owner, msg.sender), "Caller is not an authorized agent");
-        _;
-    }
-
-    constructor(address _owner, address _registry) {
-        owner = _owner;
+    constructor(address _registry) {
         registry = GuardianRegistry(_registry);
-        autoProtectionEnabled = false;
     }
 
     /**
-     * @dev Toggle autonomous protection.
+     * @dev Toggle autonomous protection for the sender.
      */
-    function toggleProtection(bool _enabled) external onlyOwner {
-        autoProtectionEnabled = _enabled;
-        emit ProtectionToggled(_enabled);
+    function toggleProtection(bool _enabled) external {
+        autoProtectionEnabled[msg.sender] = _enabled;
+        emit ProtectionToggled(msg.sender, _enabled);
     }
 
     /**
-     * @dev Authorize a yield strategy.
+     * @dev Authorize a yield strategy for the sender.
      */
-    function authorizeStrategy(address _strategy, bool _authorized) external onlyOwner {
-        authorizedStrategies[_strategy] = _authorized;
-        emit StrategyAuthorized(_strategy, _authorized);
+    function authorizeStrategy(address _strategy, bool _authorized) external {
+        authorizedStrategies[msg.sender][_strategy] = _authorized;
+        emit StrategyAuthorized(msg.sender, _strategy, _authorized);
     }
 
     /**
-     * @dev Deposit funds into the vault.
+     * @dev Deposit funds into the vault for the sender.
      */
-    receive() external payable {
+    function deposit() public payable {
+        balances[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
 
     /**
-     * @dev Withdraw funds from the vault.
+     * @dev Simple receive for direct transfers, credits msg.sender.
      */
-    function withdraw(uint256 _amount) external onlyOwner {
-        require(address(this).balance >= _amount, "Insufficient balance");
-        payable(owner).transfer(_amount);
-        emit Withdraw(owner, _amount);
+    receive() external payable {
+        deposit();
     }
 
     /**
-     * @dev Allow an authorized agent to move funds to a safe strategy.
+     * @dev Withdraw funds from the vault for the sender.
+     */
+    function withdraw(uint256 _amount) external {
+        require(balances[msg.sender] >= _amount, "Insufficient balance");
+        balances[msg.sender] -= _amount;
+        payable(msg.sender).transfer(_amount);
+        emit Withdraw(msg.sender, _amount);
+    }
+
+    /**
+     * @dev Allow an authorized agent to move funds to a safe strategy for a target user.
      * This is the "Autonomous Protection" mechanic.
      */
-    function executeProtectionAction(address _strategy, uint256 _amount) external onlyAuthorizedAgent {
-        require(autoProtectionEnabled, "Autonomous protection is disabled");
-        require(authorizedStrategies[_strategy], "Strategy not authorized");
-        require(address(this).balance >= _amount, "Insufficient balance");
+    function executeProtectionAction(address _user, address _strategy, uint256 _amount) external onlyAuthorizedAgent(_user) {
+        require(autoProtectionEnabled[_user], "Autonomous protection is disabled for user");
+        require(authorizedStrategies[_user][_strategy], "Strategy not authorized by user");
+        require(balances[_user] >= _amount, "Insufficient user balance");
+
+        // Debit user balance first
+        balances[_user] -= _amount;
 
         // Move funds to strategy
-        bool success = IYieldStrategy(_strategy).deposit(_amount);
+        bool success = IYieldStrategy(_strategy).deposit{value: _amount}(_amount);
         require(success, "Strategy deposit failed");
 
-        emit ActionExecuted(msg.sender, _strategy, _amount);
+        emit ActionExecuted(_user, msg.sender, _strategy, _amount);
     }
 
     /**
-     * @dev Emergency kill switch to revoke all agent permissions and disable protection.
+     * @dev Emergency kill switch to disable protection for the sender.
      */
-    function killSwitch() external onlyOwner {
-        autoProtectionEnabled = false;
-        // The registry revocation is separate but this stops execution here
-        emit ProtectionToggled(false);
+    function killSwitch() external {
+        autoProtectionEnabled[msg.sender] = false;
+        emit ProtectionToggled(msg.sender, false);
     }
 }

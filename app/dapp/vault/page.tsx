@@ -13,6 +13,10 @@ import { VAULT_ADDRESS, VAULT_ABI } from "@/app/constants/contracts";
  * Now fully integrated with HALO Smart Contracts on Flow EVM Testnet.
  */
 export default function VaultPage() {
+  useEffect(() => {
+    document.title = "VAULT | HALO OS";
+  }, []);
+
   const { address, isConnected } = useAccount();
   const [amount, setAmount] = useState("");
   const [isDeposit, setIsDeposit] = useState(true);
@@ -20,8 +24,16 @@ export default function VaultPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [latestTxHash, setLatestTxHash] = useState<string | undefined>(undefined);
   const [localHistory, setLocalHistory] = useState<any[]>([]);
+  const [txError, setTxError] = useState<string | null>(null);
 
-  // 1. Fetch User Wallet Balance
+  // 1. Fetch User Data from Contract
+  const { data: userVaultBalance, refetch: refetchBalance } = useReadContract({
+    address: VAULT_ADDRESS,
+    abi: VAULT_ABI,
+    functionName: "balances",
+    args: address ? [address] : undefined,
+  });
+
   const { data: userBalance } = useBalance({ address });
 
   // 2. Fetch Vault State from Contract
@@ -30,6 +42,7 @@ export default function VaultPage() {
     address: VAULT_ADDRESS,
     abi: VAULT_ABI,
     functionName: "autoProtectionEnabled",
+    args: address ? [address] : undefined,
   });
 
   // 3. Contract Interactions
@@ -120,14 +133,15 @@ export default function VaultPage() {
     ? Number(formatUnits(userBalance.value, userBalance.decimals)).toFixed(2)
     : "0.00";
 
-  const formattedVaultBalance = vaultBalance
-    ? Number(formatUnits(vaultBalance.value, vaultBalance.decimals)).toFixed(2)
+  const formattedVaultBalance = userVaultBalance
+    ? Number(formatUnits(userVaultBalance as bigint, 18)).toFixed(2)
     : "0.00";
 
   const totalPortfolio = (Number(formattedUserBalance) + Number(formattedVaultBalance)).toFixed(2);
 
   const handleAction = () => {
     if (!amount || isNaN(Number(amount))) return;
+    setTxError(null);
 
     if (isDeposit) {
       sendTransaction({
@@ -293,6 +307,17 @@ export default function VaultPage() {
                     </motion.div>
                  </AnimatePresence>
               </button>
+
+              {/* Error State Reporting */}
+              {txError && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="p-6 rounded-[2rem] bg-red-500/10 border border-primary/20 text-center"
+                >
+                   <p className="text-label !text-red-500 font-black tracking-widest">{txError}</p>
+                </motion.div>
+              )}
            </div>
         </div>
 
@@ -498,12 +523,14 @@ export default function VaultPage() {
                   href={`https://evm-testnet.flowscan.io/tx/${latestTxHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full h-16 bg-black text-white rounded-3xl flex items-center justify-center gap-4 text-label !text-white !tracking-[0.3em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl group"
+                  className="w-full h-16 bg-black text-white rounded-3xl flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl group"
                 >
-                   <ExternalLink className="w-4 h-4 text-primary group-hover:rotate-12 transition-transform" />
-                   VIEW_ON_FLOWSCAN
+                   <ExternalLink className="w-5 h-5 text-primary group-hover:rotate-12 transition-transform" />
+                   <span className="text-label !text-white !tracking-[0.3em] !text-xs !font-black !inline-flex items-center">
+                     VIEW_ON_FLOWSCAN
+                   </span>
                 </a>
-             </div>
+              </div>
              
              {/* Progress Bar Animation */}
              <motion.div 

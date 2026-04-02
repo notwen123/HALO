@@ -25,12 +25,12 @@ async function main() {
   const strategyAddress = await strategy.getAddress();
   console.log("MockYieldStrategy deployed to:", strategyAddress);
 
-  // 4. Deploy GuardianVault
+  // 4. Deploy GuardianVault (Universal Accounting Mode)
   const GuardianVault = await hre.ethers.getContractFactory("GuardianVault");
-  const vault = await GuardianVault.deploy(deployer.address, registryAddress);
+  const vault = await GuardianVault.deploy(registryAddress);
   await vault.waitForDeployment();
   const vaultAddress = await vault.getAddress();
-  console.log("Initial GuardianVault deployed to:", vaultAddress);
+  console.log("Universal GuardianVault deployed to:", vaultAddress);
 
   console.log("\nSummary of Addresses:");
   console.log("---------------------");

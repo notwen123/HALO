@@ -21,7 +21,7 @@ contract AgentIdentity is ERC721URIStorage, Ownable {
      * @param _to Address of the agent or its controller.
      * @param _tokenURI URI pointing to the agent manifest (agent.json).
      */
-    function mintAgent(address _to, string memory _tokenURI) public onlyOwner returns (uint256) {
+    function mintAgent(address _to, string memory _tokenURI) public returns (uint256) {
         uint256 newItemId = _tokenIds++;
         _mint(_to, newItemId);
         _setTokenURI(newItemId, _tokenURI);

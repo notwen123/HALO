@@ -17,14 +17,19 @@ import {
   Network, 
   Globe, 
   Settings,
-  Bell
+  Bell,
+  Server,
+  Bot,
+  Search,
+  Command
 } from "lucide-react";
 import Link from "next/link";
+import CommandPalette from "@/app/components/CommandPalette";
+import NotificationPanel from "@/app/components/NotificationPanel";
 
 /**
  * @title DAppLayout
  * @dev The persistent shell for the HALO 'Billion Dollar' dApp.
- * Provides a high-end sidebar and global header.
  */
 export default function DAppLayout({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useAccount();
@@ -32,6 +37,20 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
   const { data: balanceData } = useBalance({ address });
   const router = useRouter();
   const pathname = usePathname();
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  // Global Command Palette Listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Guard: redirect back to landing if wallet disconnected
   useEffect(() => {
@@ -45,7 +64,8 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
   const navItems = [
     { name: "VAULT", href: "/dapp/vault", icon: Database },
     { name: "INTEL", href: "/dapp/intel", icon: Activity },
-    { name: "NODES", href: "/dapp/nodes", icon: Cpu },
+    { name: "AGENTS", href: "/dapp/agents", icon: Cpu },
+    { name: "NODES", href: "/dapp/nodes", icon: Server },
     { name: "NETWORK", href: "/dapp/network", icon: Network },
     { name: "GOVERNANCE", href: "/dapp/governance", icon: Globe },
     { name: "SECURITY", href: "/dapp/security", icon: Shield },
@@ -110,9 +130,23 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
           </div>
           
           <div className="flex items-center gap-6">
-            <button className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/40 hover:bg-black hover:text-white transition-all duration-300 relative">
-              <Bell className="w-5 h-5" />
-              <div className="absolute top-0 right-0 w-3 h-3 bg-primary border-2 border-white rounded-full" />
+            <button 
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="px-6 h-12 rounded-full border border-black/5 flex items-center gap-4 text-black/40 hover:bg-black hover:text-white transition-all duration-300 group shadow-sm bg-black/[0.01]"
+            >
+              <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="text-label !tracking-widest !font-medium">SEARCH</span>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-black/5 border border-black/5 text-[9px] group-hover:bg-white/10 group-hover:border-white/10 transition-all font-sans font-black">
+                <Command className="w-2 h-2 opacity-50" />
+                <span>K</span>
+              </div>
+            </button>
+            <button 
+              onClick={() => setIsNotificationOpen(true)}
+              className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/40 hover:bg-black hover:text-white transition-all duration-300 relative group"
+            >
+              <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              <div className="absolute top-0 right-0 w-3 h-3 bg-primary border-2 border-white rounded-full group-hover:scale-110 transition-transform" />
             </button>
             <div className="w-px h-8 bg-black/10 mx-2" />
             <div className="flex items-center gap-4">
@@ -144,6 +178,16 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Global Overlays */}
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen} 
+        onClose={() => setIsCommandPaletteOpen(false)} 
+      />
+      <NotificationPanel 
+        isOpen={isNotificationOpen}
+        onClose={() => setIsNotificationOpen(false)}
+      />
     </div>
   );
 }
