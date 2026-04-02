@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="https://via.placeholder.com/100x100/000000/FFFFFF?text=H" width="80" height="80" />
-
 # HALO
 ### Autonomous Private Guardian for the Agentic Finance Era
 
@@ -28,13 +26,11 @@ When you enable HALO, a network of autonomous guardian agents activates. They mo
 
 > *"Enable Protection. Sleep peacefully. Let HALO guard your digital life."*
 
-
-
 ---
 
 ## The Problem
 
-**$3.8 billion** was lost to crypto hacks, scams, and human error in 2023 alone. In 2025–2026, that number is accelerating as more people enter the space with no technical background.
+**$3.8 billion** was lost to crypto hacks, scams, and human error in 2023 alone. In 2025–2026, that number is accelerating.
 
 | Pain Point | Reality |
 |---|---|
@@ -44,9 +40,7 @@ When you enable HALO, a network of autonomous guardian agents activates. They mo
 | 👁️ No Privacy | Every on-chain action is front-runnable and publicly trackable |
 | 🧠 Cognitive Load | Managing crypto is a second job most people didn't sign up for |
 
-The next billion users entering crypto will not tolerate this. They want security that just works — invisible, autonomous, and trustworthy.
-
-Existing solutions fail them:
+Existing solutions fail users:
 - **Hardware wallets** — secure but fully manual
 - **Yield aggregators** — automated but opaque and risky
 - **Trading bots** — powerful but require technical expertise and blind trust
@@ -58,52 +52,31 @@ None of them combine simplicity, autonomy, privacy, and verifiability in one pro
 
 ## The Solution
 
-HALO is a premium web dashboard that lets users activate "Autonomous Protection" with a single toggle.
-
-```
-User enables protection → HALO agents activate → Assets monitored 24/7
-       ↓                          ↓                        ↓
-  One toggle              Verifiable on-chain         You stay in control
-```
-
-Once enabled:
-- Idle funds automatically move into safe yield opportunities on Flow
-- Market threats and volatility are monitored in real time
-- Protective actions execute autonomously via intelligent agents
-- Every action is logged permanently and transparently
-- Human oversight is enforced at all times via kill switch + World ID
+HALO is a premium web dashboard that activates "Autonomous Protection" with a single toggle.
 
 ### Core User Flow
 
-1. **Connect** your wallet or sign up with email (no seed phrase via Flow account abstraction)
-2. **Toggle** "Enable Autonomous Protection" on your dashboard
-3. **Relax** — HALO works 24/7 in the background
-4. **Review** every agent action in your immutable audit log, anytime
+```mermaid
+flowchart LR
+    A([👤 User]) -->|"1. Connect wallet\nor email"| B[Dashboard]
+    B -->|"2. Toggle ON"| C{Protection\nEnabled?}
+    C -->|Yes| D[Guardian Agents\nActivate]
+    C -->|No| E[Idle — assets\nunprotected]
+    D -->|"Monitor 24/7"| F[Vault Secure\n✅ Yield Earning]
+    D -->|"Log every action"| G[Audit Trail\nStoracha + Filecoin]
+    F -->|"Threat detected"| H[Auto-protect\nexecutes]
+    H --> F
+```
 
-It feels like a high-end security SaaS. Think **Cloudflare meets Apple Security**, built on blockchain.
+It feels like a high-end SaaS security product. Think **Cloudflare meets Apple Security**, built on blockchain.
 
 ---
 
 ## What Makes HALO Unique
 
-Most crypto projects build trading bots or yield optimizers. HALO builds something fundamentally different — a **security primitive for the agentic finance era**.
-
-### Simple outside. Sophisticated inside.
-
-```
-What the user sees:          What's happening underneath:
-┌─────────────────┐          ┌──────────────────────────────────────┐
-│                 │          │  GuardianAgent (ERC-8004 identity)   │
-│  [ ● PROTECT ]  │  ──────► │  → Reads vault state via viem        │
-│                 │          │  → Detects unprotected funds         │
-└─────────────────┘          │  → Executes yield strategy on Flow   │
-   One toggle                │  → Logs to Storacha + Filecoin       │
-                             │  → World ID dead-man's switch active │
-                             └──────────────────────────────────────┘
-```
+Most crypto projects build trading bots or yield optimizers. HALO builds a **security primitive for the agentic finance era**.
 
 Key differentiators:
-
 - **Agent-native by design** — Agents have verifiable on-chain identities via ERC-8004, not just anonymous scripts
 - **Human-first safety** — Kill switch, World ID biometric verification, and full audit trail keep humans in control
 - **Privacy-preserving** — Actions execute inside Flow's private enclave; no front-running possible
@@ -123,64 +96,121 @@ Key differentiators:
 | ⚡ Flow EVM growth | 400%+ YoY testnet activity |
 | 🌍 DeFi total value locked | $180B+ actively seeking yield |
 
-### Who needs HALO
-
-- **Retail investors** who hold crypto but don't actively manage it
-- **DeFi power users** tired of babysitting positions
-- **DAOs and treasuries** that need autonomous, auditable asset management
-- **Developers** building the next wave of agentic finance applications
-
 The long-term play: HALO becomes the **trust layer for autonomous finance** — the infrastructure every AI agent uses to prove it acted safely and correctly.
-
-
 
 ---
 
 ## Architecture
 
+### System Overview
+
+```mermaid
+flowchart TD
+    User(["👤 User"])
+
+    subgraph FE ["Frontend — Next.js 16 + React 19"]
+        UI["Dashboard UI"]
+        RK["RainbowKit + Wagmi v3"]
+        FM["Framer Motion v12"]
+    end
+
+    subgraph AL ["Agent Layer"]
+        GA["GuardianAgent\nlib/agent.ts"]
+        VC["viem public client\n+ wallet client"]
+    end
+
+    subgraph BC ["Blockchain — Flow EVM · Chain ID 545"]
+        GV["GuardianVault.sol\nautoProtectionEnabled"]
+        AI["AgentIdentity.sol\nERC-8004 NFT"]
+        GR["GuardianRegistry.sol\nUser ↔ Agent auth"]
+        MY["MockYieldStrategy.sol"]
+    end
+
+    subgraph DS ["Decentralized Storage"]
+        ST["Storacha\nActive memory\nShort-term logs"]
+        FC["Filecoin\nPermanent archive\nBlack-box audit"]
+    end
+
+    subgraph SF ["Safety Layer"]
+        WID["World ID\nBiometric verification"]
+        KS["Kill Switch\nInstant revocation"]
+    end
+
+    User -->|"connects"| RK
+    User -->|"toggles protection"| UI
+    UI -->|"toggleProtection()"| GV
+    UI -->|"triggers agent"| GA
+    GA --> VC
+    VC -->|"reads vault state"| GV
+    VC -->|"checks auth"| GR
+    GR -->|"verifies NFT"| AI
+    VC -->|"executeProtectionAction()"| GV
+    GV -->|"deposit()"| MY
+    GA -->|"uploadLog()"| ST
+    ST -->|"permanent archive"| FC
+    WID -->|"periodic check"| GA
+    KS -->|"disable all agents"| GV
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        HALO SYSTEM                              │
-│                                                                 │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐  │
-│  │   Frontend   │    │  Agent Layer │    │  Blockchain      │  │
-│  │              │    │              │    │                  │  │
-│  │  Next.js 16  │───►│ GuardianAgent│───►│ GuardianVault    │  │
-│  │  RainbowKit  │    │  (lib/agent) │    │ (Flow EVM 545)   │  │
-│  │  Wagmi v3    │    │  viem client │    │                  │  │
-│  │  Framer      │    │  + scheduler │    │ AgentIdentity    │  │
-│  │  Motion v12  │    │              │    │ (ERC-8004 NFT)   │  │
-│  └──────────────┘    └──────┬───────┘    │                  │  │
-│                             │            │ GuardianRegistry │  │
-│  ┌──────────────┐           │            │ MockYieldStrategy│  │
-│  │   Storage    │◄──────────┘            └──────────────────┘  │
-│  │              │                                               │
-│  │  Storacha    │  ← Active agent memory + short-term logs     │
-│  │  Filecoin    │  ← Permanent immutable audit trail           │
-│  └──────────────┘                                              │
-│                                                                 │
-│  ┌──────────────┐                                              │
-│  │  World ID    │  ← Biometric dead-man's switch               │
-│  └──────────────┘                                              │
-└─────────────────────────────────────────────────────────────────┘
+
+### Agent Execution Flow
+
+```mermaid
+sequenceDiagram
+    participant S as Scheduler
+    participant A as GuardianAgent
+    participant V as GuardianVault
+    participant R as GuardianRegistry
+    participant Y as YieldStrategy
+    participant ST as Storacha
+
+    S->>A: trigger checkAndProtect()
+    A->>V: read autoProtectionEnabled
+    V-->>A: true
+    A->>V: read vault balance
+    V-->>A: balance > 0
+    A->>R: isAuthorized(owner, agent)
+    R-->>A: true
+    A->>V: simulateContract executeProtectionAction()
+    V-->>A: simulation ok
+    A->>V: writeContract executeProtectionAction()
+    V->>Y: deposit(amount)
+    Y-->>V: success
+    V-->>A: tx hash
+    A->>ST: uploadLog(event, txHash, amount)
+    ST-->>A: CID stored
 ```
 
 ### Smart Contracts
 
-Deployed on **Flow EVM Testnet (Chain ID: 545)**
-
+Deployed on **Flow EVM Testnet**
 
 NEXT_PUBLIC_AGENT_IDENTITY_ADDRESS=0x6b542A9361A7dd16c0b6396202A192326154a1e2
 NEXT_PUBLIC_GUARDIAN_REGISTRY_ADDRESS=0xa4F78fbf10440afEa067A8fc5391d87f78919107
 NEXT_PUBLIC_MOCK_YIELD_STRATEGY_ADDRESS=0x61CBf3d0706a0780c5eEdB6b57D5B539C185Ae8C
 NEXT_PUBLIC_INITIAL_VAULT_ADDRESS=0x2f4C507343fC416eAD53A1223b7d344E1e90eeC4
+
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 16 + React 19 |
+| Styling | Tailwind CSS v4 |
+| Animation | Framer Motion v12 |
+| Web3 | Wagmi v3 + RainbowKit v2 + viem |
+| Blockchain | Flow EVM (Chain ID 545) |
+| Agent Identity | ERC-8004 via ERC-721 (OpenZeppelin v5) |
+| Active Memory | Storacha (`@storacha/client`) |
+| Audit Log | Filecoin Calibration Testnet |
+| Human Safety | World ID (`@worldcoin/idkit`) |
+| Contracts | Hardhat + OpenZeppelin |
+| Smooth Scroll | Lenis |
+
 ---
 
 ## Technology Deep Dive
 
 ### Flow — The Backbone
-
-Flow is not just a chain HALO runs on — it's the reason HALO is possible.
 
 - **Account Abstraction** — Users onboard with email or passkey. No seed phrases. No gas confusion.
 - **Scheduled Transactions** — Cadence's native scheduling lets agents execute at precise intervals without a centralized cron server
@@ -202,11 +232,7 @@ function mintAgent(address _to, string memory _tokenURI) public onlyOwner return
 }
 ```
 
-The `tokenURI` points to an `agent.json` manifest describing the agent's capabilities, constraints, and authorization scope — making every action auditable and attributable.
-
 ### Storacha — Agent Memory
-
-HALO agents don't just act — they remember. Every protection event is uploaded to Storacha as structured JSON, giving agents persistent working memory across sessions.
 
 ```typescript
 // lib/storacha.ts
@@ -217,13 +243,9 @@ async uploadLog(log: any) {
 }
 ```
 
-### Filecoin — The Black Box
-
-Every significant action HALO takes is permanently archived on Filecoin. This is the immutable audit trail — the black box flight recorder for your assets. Even if HALO's servers go down, your history is preserved forever.
-
 ### World ID — Human Guardianship
 
-The dead-man's switch: if the human owner doesn't verify their identity via World ID within a set period, HALO automatically pauses all autonomous actions. AI agents can never act indefinitely without human confirmation — a critical safety primitive for the agentic finance era.
+If the human owner doesn't verify their identity via World ID within a set period, HALO automatically pauses all autonomous actions. AI agents can never act indefinitely without human confirmation.
 
 ---
 
@@ -279,24 +301,9 @@ Built for **PL_Genesis: Frontiers of Collaboration Hackathon 2026**
 |---|---|---|
 | 🥇 Flow: Future of Finance | Primary | GuardianVault + autonomous agents on Flow EVM 545 |
 | 🤖 Agent Only: Let the agent cook | $8,000 | ERC-8004 identity, autonomous execution loop, agent.json manifest |
-| 🗄️ Storacha | Secondary | Agent working memory uploaded via `@storacha/client` |
-| 📦 Filecoin | Secondary | Permanent black-box audit trail on Calibration testnet |
+| ️ Storacha | Secondary | Agent working memory via `@storacha/client` |
+|  Filecoin | Secondary | Permanent black-box audit trail on Calibration testnet |
 | 🌍 World ID | Secondary | Biometric dead-man's switch via `@worldcoin/idkit` |
-
----
-
-## Roadmap
-
-| Phase | Status | Milestone |
-|---|---|---|
-| Foundation | ✅ Done | Contracts deployed, dashboard live, agent loop working |
-| Storage | ✅ Done | Storacha log uploads integrated |
-| Safety | 🔜 Next | World ID dead-man's switch live |
-| Permanence | 🔜 Next | Filecoin archival integration |
-| Privacy | 🔮 Future | Confidential logic via Zama FHE |
-| Multi-chain | 🔮 Future | Cross-chain protection via Lit Protocol |
-| SDK | 🔮 Future | Open Guardian SDK for developers |
-| Mainnet | 🔮 Future | Flow mainnet launch |
 
 ---
 
