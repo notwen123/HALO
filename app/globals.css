@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Geist+Mono:wght@100;300;400&display=swap');
 @import "tailwindcss";
 
 /* 
@@ -76,10 +76,10 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
-    letter-spacing: -0.05em;
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.04em;
     color: var(--foreground);
-    font-weight: 800; /* Billion Dollar Boldness */
+    font-weight: 700; /* Sophisticated Boldness */
   }
 
   /* Billion Dollar Typography Scale */
@@ -103,9 +103,9 @@
   /* LIQUID GLASS 2.0 - PERFORMANCE OPTIMIZED */
   .glass-billion {
     background: var(--surface-glass);
-    backdrop-filter: blur(20px) saturate(180%); /* Reduced blur from 40px for FPS */
+    backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1.5px solid rgba(0, 0, 0, 0.12); /* Increased definition */
     box-shadow: 
       0 10px 40px -10px rgba(0, 0, 0, 0.05),
       inset 0 0 0 1px rgba(255, 255, 255, 0.5);
@@ -116,7 +116,7 @@
   .glass-card {
     background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Standardized Billion Dollar Border */
     transition: all var(--duration-normal) var(--ease-premium);
     will-change: transform;
   }
@@ -146,8 +146,15 @@
     50% { opacity: 0.15; transform: scale(1.1); }
   }
 
-  /* MASKING */
-  .mask-vignette {
-    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  /* HALO LABEL STANDARD - FIXES THIN/SPREAD LOOK */
+  .text-label {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 10px;
+    font-weight: 800; /* Extrabold Visibility */
+    letter-spacing: 0.15em; /* Professional Compactness */
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.45); /* Consistent Contrast */
+    line-height: 1;
+    display: inline-block;
   }
 }

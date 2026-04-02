@@ -1,6 +1,7 @@
 "use client";
 
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useBalance } from "wagmi";
+import { formatUnits } from "viem";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,6 +29,7 @@ import Link from "next/link";
 export default function DAppLayout({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { data: balanceData } = useBalance({ address });
   const router = useRouter();
   const pathname = usePathname();
 
@@ -51,13 +53,14 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen bg-white text-black font-sans flex">
-      {/* Sidebar */}
-      <aside className="w-80 border-r border-black/5 bg-white flex flex-col fixed inset-y-0 z-50">
-        <div className="p-10 border-b border-black/5 flex items-center gap-4">
+      {/* Sidebar - Billion Dollar Definition */}
+      <aside className="w-80 border-r border-black/10 bg-white flex flex-col fixed inset-y-0 z-50 shadow-[20px_0_60px_-20px_rgba(0,0,0,0.02)]">
+        {/* Top Alignment - Synchronized with Header Height */}
+        <div className="h-28 p-10 border-b border-black/10 flex items-center gap-4">
           <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-[0_10px_30px_rgba(0,0,0,0.1)]">H</div>
           <div>
             <h1 className="text-xl font-black tracking-tighter uppercase leading-tight">HALO</h1>
-            <p className="text-[10px] font-mono text-black/30 tracking-[0.4em] uppercase">Built on Flow</p>
+            <p className="text-label !text-black/20 !tracking-[0.2em] !font-medium">Built on Flow</p>
           </div>
         </div>
         
@@ -73,8 +76,8 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
                     ${isActive ? "bg-black text-white" : "hover:bg-black/5 text-black/40 hover:text-black"}
                   `}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-black/40"}`} />
-                  <span className={`text-[11px] font-mono font-black tracking-[0.4em] uppercase ${isActive ? "text-white" : "group-hover:text-black"}`}>
+                  <Icon className={`w-5 h-5 ${isActive ? "text-primary" : "text-black/60"}`} />
+                  <span className={`text-label ${isActive ? "!text-white !font-black" : "group-hover:!text-black opacity-80"}`}>
                     {name}
                   </span>
                 </motion.div>
@@ -83,10 +86,10 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
           })}
         </nav>
 
-        <div className="p-8 border-t border-black/5 space-y-6">
+        <div className="p-8 border-t border-black/10 space-y-6">
           <button
             onClick={() => disconnect()}
-            className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-[11px] font-mono font-black tracking-[0.4em] text-black/30 uppercase hover:bg-red-50 hover:text-red-500 transition-all duration-300 group"
+            className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-label !text-black/30 hover:bg-red-50 hover:!text-red-600 transition-all duration-300 group"
           >
             <LogOut className="w-5 h-5 group-hover:rotate-12 transition-transform" /> 
             <span>TERMINATE</span>
@@ -96,10 +99,10 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
 
       {/* Main Content Area */}
       <div className="flex-1 ml-80">
-        {/* Header */}
-        <header className="h-28 border-b border-black/5 flex items-center justify-between px-16 bg-white/80 backdrop-blur-xl sticky top-0 z-40">
+        {/* Header - Billion Dollar Definition */}
+        <header className="h-28 border-b border-black/10 flex items-center justify-between px-16 bg-white/80 backdrop-blur-xl sticky top-0 z-40">
           <div className="space-y-1">
-            <h2 className="text-xs font-mono tracking-[0.4em] text-black/30 uppercase">Authorized Session</h2>
+            <h2 className="text-label !text-black/20">Authorized Session</h2>
             <div className="flex items-center gap-3">
               <p className="text-xl font-black tracking-tighter uppercase">{shortAddress}</p>
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -114,10 +117,14 @@ export default function DAppLayout({ children }: { children: React.ReactNode }) 
             <div className="w-px h-8 bg-black/10 mx-2" />
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-[10px] font-mono tracking-[0.2em] text-black/30 uppercase">Vault Balance</p>
-                <p className="text-xl font-black tracking-tighter uppercase">0.00 FLOW</p>
+                <p className="text-label !text-black/20">Vault Balance</p>
+                <p className="text-xl font-black tracking-tighter uppercase">
+                   {balanceData ? `${Number(formatUnits(balanceData.value, balanceData.decimals)).toFixed(2)} ${balanceData.symbol}` : "0.00 FLOW"}
+                </p>
               </div>
-              <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center text-black font-black">?</div>
+              <div className="w-12 h-12 flex items-center justify-center group">
+                <img src="/flow.png" alt="Flow" className="w-10 h-10 object-contain rounded-xl group-hover:scale-110 transition-transform duration-500" />
+              </div>
             </div>
           </div>
         </header>
