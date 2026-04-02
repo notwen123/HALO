@@ -3,169 +3,219 @@
 import { FloatingIsland } from "./components/luxury/FloatingIsland";
 import { MagneticButton } from "./components/luxury/MagneticButton";
 import { ParallaxWrapper } from "./components/luxury/ParallaxWrapper";
-import { StitchHero } from "./components/stitch/StitchHero";
+import { TiltWrapper } from "./components/luxury/TiltWrapper";
 import { IntelligenceSection } from "./components/stitch/IntelligenceSection";
 import { BentoGrid } from "./components/stitch/BentoGrid";
 import { PrivacySection } from "./components/stitch/PrivacySection";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Shield, Zap, Lock, Activity, ArrowRight, Play, Cpu, Globe, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
+import { useAccount } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useRouter } from "next/navigation";
 
 /**
- * @title HALO_BILLION_DOLLAR_LANDING
- * @dev Replicating the absolute pinnacle of luxury UI inspired by Stitch/Apple.
+ * @title HALO_ULTRA_PREMIUM_LANDING
+ * @dev The pinnacle of high-end UI: Buttery smooth transitions and Siri-inspired typography.
  */
 export default function BillionDollarLanding() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll();
+  const router = useRouter();
+  const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   
-  // Billion Dollar Transform (Moved to top level to follow Rule of Hooks)
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  // Redirect to dashboard once wallet connects
+  useEffect(() => {
+    if (isConnected) router.push("/dapp/vault");
+  }, [isConnected, router]);
+
+  const handleInitialize = () => {
+    if (isConnected) {
+      router.push("/dapp/vault");
+    } else {
+      openConnectModal?.();
+    }
+  };
+
   if (!mounted) return null;
 
   return (
-    <div ref={containerRef} className="relative bg-[#0a0a0a] text-white selection:bg-primary/30 selection:text-white">
-      {/* 0. FLOATING ISLAND NAVIGATION */}
+    <div ref={containerRef} className="relative bg-background text-foreground selection:bg-primary/10 selection:text-primary font-sans">
+      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF00A0] via-[#7000FF] to-[#00A0FF] z-[100] origin-left" style={{ scaleX }} />
+
       <FloatingIsland />
       
-      {/* 1. IMMERSIVE PARALLAX HERO */}
+      {/* 1. HERO SECTION */}
       <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden">
-         {/* Siri Gradient Spheres */}
-         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] siri-sphere blur-[120px] rounded-full opacity-30 animate-pulse" />
-         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] siri-sphere blur-[100px] rounded-full opacity-20 animate-pulse-slow" />
+         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
          
-         <div className="absolute inset-x-0 bottom-0 siri-glow h-[400px] opacity-40 pointer-events-none" />
-         
-         <div className="relative z-10 text-center px-6 flex flex-col items-center gap-20">
-            <ParallaxWrapper offset={120}>
-               <motion.h1 
-                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
-                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                 className="text-[10rem] md:text-[16rem] font-black tracking-tighter leading-none uppercase text-white"
-               >
-                 HALO
-               </motion.h1>
+         <div className="relative z-10 text-center px-12 flex flex-col items-center justify-center gap-12 w-full max-w-7xl">
+            <ParallaxWrapper offset={160}>
+               <TiltWrapper strength={40}>
+                  <motion.h1 
+                    initial={{ opacity: 0, y: 50, filter: "blur(20px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-billion tracking-tighter leading-none uppercase text-siri drop-shadow-[0_20px_40px_rgba(255,0,160,0.2)]"
+                  >
+                    HALO
+                  </motion.h1>
+               </TiltWrapper>
             </ParallaxWrapper>
 
-            <motion.div
+            <motion.p
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 0.3 }}
-               className="space-y-6"
+               transition={{ delay: 0.6, duration: 1 }}
+               className="text-2xl md:text-3xl font-extrabold text-black/60 max-w-2xl mx-auto leading-tight tracking-tight uppercase"
             >
-              <p className="text-2xl md:text-3xl font-medium text-white/40 max-w-3xl mx-auto leading-relaxed">
-                 Autonomous AI security for your digital assets. <br className="hidden md:block" /> 
-                 Luxury, uncompromised.
-              </p>
-            </motion.div>
+               Autonomous security for your billion-dollar investment.
+            </motion.p>
             
             <motion.div 
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 0.5 }}
-               className="flex flex-col sm:flex-row items-center justify-center gap-12 pt-10"
+               transition={{ delay: 1, duration: 1 }}
+               className="flex flex-col sm:flex-row items-center justify-center gap-16 pt-4"
             >
-               <MagneticButton strength={40}>
-                  INITIALIZE VAULT <ArrowRight className="w-8 h-8 ml-4 group-hover:translate-x-2 transition-transform" />
+               <MagneticButton strength={40} onClick={handleInitialize}>
+                  <span className="flex items-center gap-6">
+                    INITIALIZE <ArrowRight className="w-10 h-10 group-hover:translate-x-3 transition-transform" />
+                  </span>
                </MagneticButton>
-               <button className="text-white/30 text-xl font-black uppercase tracking-[0.5em] hover:text-white transition-colors flex items-center gap-6 group">
-                  <Play className="w-8 h-8 fill-current group-hover:rotate-12 transition-transform" /> WATCH_THE_FILM
-               </button>
             </motion.div>
          </div>
          
-         {/* Adaptive Scroll Indicator */}
-         <motion.div 
-           style={{ opacity: scrollIndicatorOpacity }}
-           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
-         >
-            <div className="text-[9px] font-mono tracking-[0.8em] text-white/20 uppercase font-black">SCROLL_FOR_INTEL</div>
-            <div className="w-[1px] h-20 bg-gradient-to-b from-primary to-transparent" />
-         </motion.div>
       </section>
 
-      {/* 2. THE INTELLIGENCE SECTION (Parallax Textures) */}
-      <div className="relative z-20">
+      {/* 2. THE INTELLIGENCE SECTION */}
+      <section className="relative z-20 py-40">
          <IntelligenceSection />
-      </div>
+      </section>
 
-      {/* 3. BENTO GRID (Billion Dollar Tier) */}
-      <div className="relative z-20 bg-surface py-20 px-10">
+      {/* 3. BENTO GRID */}
+      <section className="relative z-20 bg-surface py-40 px-12 overflow-hidden border-y border-black/5">
          <BentoGrid />
-      </div>
+      </section>
 
-      {/* 4. THE VAULT (Final CTA) */}
-      <section className="relative z-20 h-screen flex flex-col items-center justify-center text-center px-10 border-t border-white/5 bg-black">
-         <div className="absolute inset-0 siri-glow opacity-10 pointer-events-none" />
-         
-         <div className="max-w-5xl mx-auto space-y-24">
-            <ParallaxWrapper offset={-80}>
-               <h2 className="text-7xl md:text-[14rem] font-black tracking-tighter leading-[0.75] uppercase text-white">
-                  JOIN THE<br />
-                  <span className="text-primary glow-text">EVOLUTION.</span>
-               </h2>
-               <p className="text-zinc-700 text-xl md:text-3xl font-medium max-w-4xl mx-auto leading-tight pt-10">
-                  "Protocol activation is by invite only. Initialize your proof of autonomy to begin the onboarding sequence."
-               </p>
+      {/* 4. PRIVACY SECTION */}
+      <section className="relative z-20 py-40">
+         <PrivacySection />
+      </section>
+
+      {/* 5. THE VAULT (Final CTA) */}
+      <section className="relative z-20 min-h-screen flex flex-col items-center justify-center text-center px-12 border-t border-black/5 bg-white overflow-hidden">
+         <div className="max-w-7xl mx-auto space-y-32">
+            <ParallaxWrapper offset={-100}>
+               <TiltWrapper strength={30}>
+                  <h2 className="text-[6rem] md:text-[14rem] font-extrabold tracking-tighter leading-[0.8] uppercase text-black">
+                     PROTECT YOUR<br />
+                     <span className="text-siri">FUTURE.</span>
+                  </h2>
+               </TiltWrapper>
             </ParallaxWrapper>
 
             <motion.div 
                initial={{ opacity: 0, y: 30 }}
                whileInView={{ opacity: 1, y: 0 }}
-               className="flex flex-col items-center gap-10"
+               transition={{ duration: 0.8 }}
+               viewport={{ once: true }}
+               className="flex flex-col items-center gap-12"
             >
-               <MagneticButton strength={60} className="scale-125">
-                  INITIALIZE_GUARD <ArrowUpRight className="w-8 h-8 ml-4" />
+               <MagneticButton strength={60} className="scale-125" onClick={handleInitialize}>
+                  <span className="flex items-center gap-4">
+                    START ONBOARDING <ArrowUpRight className="w-8 h-8" />
+                  </span>
                </MagneticButton>
-               <div className="text-[10px] font-mono tracking-[0.6em] text-zinc-800 uppercase font-bold animate-pulse">
-                  PRIVATE_ENCLAVE_ACTIVE // SECURED_BY_FLOW_EVM
-               </div>
             </motion.div>
          </div>
       </section>
 
-      {/* 5. FOOTER (Billion Dollar Luxury) */}
-      <footer className="relative z-20 py-40 px-12 border-t border-white/5 bg-[#0a0a0a]">
-         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-20">
-            <div className="col-span-1 md:col-span-2 space-y-12">
-               <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-black font-black text-2xl">H</div>
-                  <h1 className="text-5xl font-black tracking-tighter uppercase text-white shadow-lg">HALO</h1>
-               </div>
-               <p className="text-white/20 text-lg max-w-md font-medium leading-relaxed">
-                  The billion-dollar autonomous security protocol built for the decentralised era. 
-                  Guarding your future with intelligence that never sleeps.
-               </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-20 col-span-1 md:col-span-2">
-               <div className="space-y-8">
-                  <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">PROTOCOL</h4>
-                  <ul className="space-y-4 text-white font-black text-xl uppercase tracking-tighter">
-                     <li className="hover:text-primary transition-colors cursor-pointer">Vault</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Intel</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Nodes</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Yield</li>
-                  </ul>
-               </div>
-               <div className="space-y-8">
-                  <h4 className="text-white/40 font-mono tracking-[0.5em] text-[10px] uppercase font-bold">INFO</h4>
-                  <ul className="space-y-4 text-white font-black text-xl uppercase tracking-tighter">
-                     <li className="hover:text-primary transition-colors cursor-pointer">Github</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Whitepaper</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Flow EVM</li>
-                     <li className="hover:text-primary transition-colors cursor-pointer">Audit</li>
-                  </ul>
-               </div>
-            </div>
+      {/* 6. STUDIO-GRADE FOOTER (BRIGHT THEME) */}
+      <footer className="relative z-20 py-48 px-16 border-t border-black/5 bg-white text-black overflow-hidden group/footer">
+         {/* Massive Backdrop Text - Stylish Outline, Bottom Aligned, Subtle Parallax */}
+         <div className="absolute inset-x-0 bottom-0 flex items-end justify-center z-0 pointer-events-none select-none overflow-hidden h-full">
+            <ParallaxWrapper offset={-50}>
+               <h1 className="text-[35vw] font-black tracking-tighter uppercase leading-[0.7] translate-y-[10%] select-none pointer-events-none italic"
+                   style={{ 
+                     color: "rgba(0,0,0,0.06)",
+                     WebkitTextStroke: "0px",
+                     opacity: 1
+                   }}
+               >
+                  HALO
+               </h1>
+            </ParallaxWrapper>
          </div>
-         <div className="text-center mt-40 text-[9px] font-mono text-zinc-900 tracking-[1em] uppercase font-black">
-            © 2026_HALO_OS // BILLION_DOLLAR_UI_ACTIVE
+
+         <div className="max-w-screen-2xl mx-auto relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-32 mb-32">
+               {/* Left Section: Logo & Copyright */}
+               <div className="md:col-span-4 space-y-12">
+                  <div className="flex items-center gap-6">
+                     <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center text-white font-black text-3xl shadow-2xl">H</div>
+                     <h2 className="text-4xl font-black tracking-tighter uppercase">HALO</h2>
+                  </div>
+                  <p className="text-black/30 text-xl font-bold leading-relaxed tracking-tight max-w-sm">
+                     © copyright HALOnow 2026. All rights reserved.
+                  </p>
+               </div>
+
+               {/* Right Section: Link Columns */}
+               <div className="md:col-span-8 grid grid-cols-2 lg:grid-cols-4 gap-20">
+                  <div className="space-y-8">
+                     <h4 className="text-black/10 font-bold tracking-[0.4em] text-sm uppercase">PAGES</h4>
+                     <ul className="space-y-4 text-black/50 font-bold text-lg uppercase tracking-tight">
+                        <li className="hover:text-primary transition-colors cursor-pointer">All Products</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Studio</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Clients</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Pricing</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Blog</li>
+                     </ul>
+                  </div>
+
+                  <div className="space-y-8">
+                     <h4 className="text-black/10 font-bold tracking-[0.4em] text-sm uppercase">SOCIALS</h4>
+                     <ul className="space-y-4 text-black/50 font-bold text-lg uppercase tracking-tight">
+                        <li className="hover:text-primary transition-colors cursor-pointer">Facebook</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Instagram</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Twitter</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">LinkedIn</li>
+                     </ul>
+                  </div>
+
+                  <div className="space-y-8">
+                     <h4 className="text-black/10 font-bold tracking-[0.4em] text-sm uppercase">LEGAL</h4>
+                     <ul className="space-y-4 text-black/50 font-bold text-lg uppercase tracking-tight">
+                        <li className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Terms of Service</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Cookie Policy</li>
+                     </ul>
+                  </div>
+
+                  <div className="space-y-8">
+                     <h4 className="text-black/10 font-bold tracking-[0.4em] text-sm uppercase">REGISTER</h4>
+                     <ul className="space-y-4 text-black/50 font-bold text-lg uppercase tracking-tight">
+                        <li className="hover:text-primary transition-colors cursor-pointer">Sign Up</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Login</li>
+                        <li className="hover:text-primary transition-colors cursor-pointer">Forgot Password</li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            
          </div>
       </footer>
     </div>

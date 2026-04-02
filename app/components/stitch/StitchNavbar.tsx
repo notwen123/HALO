@@ -20,11 +20,12 @@ export function StitchNavbar() {
           </Link>
           
           <div className="hidden md:flex gap-10 items-center text-[9px] font-mono tracking-[0.4em] text-zinc-500 uppercase font-bold">
-            <Link href="#" className="hover:text-white transition-opacity duration-200">VAULT</Link>
-            <Link href="#" className="hover:text-white transition-opacity duration-200">INTEL</Link>
-            <Link href="#" className="hover:text-white transition-opacity duration-200">NODES</Link>
-            <Link href="#" className="hover:text-white transition-opacity duration-200">NETWORK</Link>
-            <Link href="#" className="hover:text-white transition-opacity duration-200">GOVERNANCE</Link>
+            <Link href="#vault" className="hover:text-white transition-opacity duration-200">VAULT</Link>
+            <Link href="#intel" className="hover:text-white transition-opacity duration-200">INTEL</Link>
+            <Link href="#nodes" className="hover:text-white transition-opacity duration-200">NODES</Link>
+            <Link href="#network" className="hover:text-white transition-opacity duration-200">NETWORK</Link>
+            <Link href="#governance" className="hover:text-white transition-opacity duration-200">GOVERNANCE</Link>
+            <Link href="#security" className="hover:text-white transition-opacity duration-200">SECURITY</Link>
           </div>
         </div>
         
