@@ -12,30 +12,25 @@ const flowEvmTestnet = {
   id: 545,
   name: "Flow EVM Testnet",
   nativeCurrency: { name: "Flow", symbol: "FLOW", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://testnet.evm.nodes.onflow.org"] },
-  },
-  blockExplorers: {
-    default: { name: "FlowScan", url: "https://evm-testnet.flowscan.io" },
-  },
+  rpcUrls: { default: { http: ["https://testnet.evm.nodes.onflow.org"] } },
+  blockExplorers: { default: { name: "FlowScan", url: "https://evm-testnet.flowscan.io" } },
   testnet: true,
 } as const;
 
-/**
- * @dev Use wagmi's injected() connector directly.
- * This calls window.ethereum.request immediately — no WalletConnect relay,
- * no deep-link, MetaMask popup fires instantly.
- */
-const metaMaskWalletDef = () => ({
+// Read from .env — never hardcode
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!;
+
+const metaMaskWallet = () => ({
   id: "metamask",
   name: "MetaMask",
   iconUrl: "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",
   iconBackground: "#fff",
   downloadUrls: { browserExtension: "https://metamask.io/download/" },
+  // injected({ target: "metaMask" }) calls window.ethereum directly — no WalletConnect relay
   createConnector: () => injected({ target: "metaMask" }),
 });
 
-const injectedWalletDef = () => ({
+const browserWallet = () => ({
   id: "injected",
   name: "Browser Wallet",
   iconUrl: "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",
@@ -45,11 +40,8 @@ const injectedWalletDef = () => ({
 });
 
 const connectors = connectorsForWallets(
-  [{ groupName: "Browser Wallet", wallets: [metaMaskWalletDef, injectedWalletDef] }],
-  {
-    appName: "HALO",
-    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? "placeholder",
-  }
+  [{ groupName: "Wallets", wallets: [metaMaskWallet, browserWallet] }],
+  { appName: "HALO", projectId }
 );
 
 const config = createConfig({
